@@ -2,7 +2,7 @@
 //  AppDelegate.swift
 //  My-Instagram-Version
 //
-//  Created by Silvia L Mendez on 9/27/18.
+//  Created by Luis Mendez on 9/27/18.
 //  Copyright © 2018 Luis Mendez. All rights reserved.
 //
 
