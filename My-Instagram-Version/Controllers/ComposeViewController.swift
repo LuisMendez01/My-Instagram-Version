@@ -8,7 +8,7 @@
 
 import UIKit
 
-class ComposeViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+class ComposeViewController: UIViewController, UINavigationControllerDelegate, UIImagePickerControllerDelegate {
 
     @IBOutlet weak var imageToPost: UIImageView!
     
@@ -94,22 +94,21 @@ class ComposeViewController: UIViewController, UIImagePickerControllerDelegate, 
         
         let PickerVC = UIImagePickerController()
         PickerVC.delegate = self
-        //image will be dragged from photoLibrary
-        PickerVC.sourceType = UIImagePickerController.SourceType.photoLibrary
-        PickerVC.allowsEditing = false
+        PickerVC.allowsEditing = true
         
         if UIImagePickerController.isSourceTypeAvailable(.camera) {
             print("Camera is available 📸")
             PickerVC.sourceType = .camera
         } else {
             print("Camera 🚫 available so we will use photo library instead")
+            //image will be dragged from photoLibrary
             PickerVC.sourceType = .photoLibrary
         }
         
         self.present(PickerVC, animated: true, completion: nil)
     }
     
-    private func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
+    @objc func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
         
         // Get the image captured by the UIImagePickerController
         //Set image as UIImage if all good then set it to our image variable
@@ -126,9 +125,9 @@ class ComposeViewController: UIViewController, UIImagePickerControllerDelegate, 
             imageToPost.image = img
             
         } else if let editedImage = info["UIImagePickerControllerEditedImage"] as? UIImage {
-            print("ImageEdited was uploaded")
-            //set the image size in terms of width and height, will be equal to almost 1MB, what I want
-            let size = CGSize(width: 200, height: 200)
+            print("editedImage was uploaded")
+            //set the image size in terms of width and height, will be equal to almost 5MB, what I want
+            let size = CGSize(width: 1000, height: 1000)
             
             //resize image to be less than 1MB
             let imageEdited = resize(image: editedImage, newSize: size)
