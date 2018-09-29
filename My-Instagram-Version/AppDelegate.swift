@@ -28,20 +28,59 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 configuration.server = "https://instagram-like-app.herokuapp.com/parse"
             })
         )
+        
+        NotificationCenter.default.addObserver(forName: Notification.Name("didLogout"), object: nil, queue: OperationQueue.main) { (Notification) in
+            print("Logout notification received")
+            // TODO: Logout the User
+            // TODO: Load and show the login view controller
+            self.logOut()
+        }
+        
         print("User appDelegate: \(String(describing: PFUser.current()))")
         // check if user is logged in.
         if PFUser.current() != nil {
             
             let storyboard = UIStoryboard(name: "Main", bundle: nil)
             // view controller currently being set in Storyboard as default will be overridden
-            let vc = storyboard.instantiateViewController(withIdentifier: "homeFeedVC") as! HomeFeedViewController
+            let HomeFeedVC = storyboard.instantiateViewController(withIdentifier: "homeFeedVC") as! HomeFeedViewController
+            //Only using this shows a white screen but below code makes it work, guess it's
+            //the fact that this HomeFeedVC has a NavBar Controller
+                //self.window?.rootViewController = HomeFeedVC
             
-            let navigationController = UINavigationController(rootViewController: vc)
-            window!.rootViewController = navigationController
+            //do this if you want a NavBarController on top of VC
+                let navigationController = UINavigationController(rootViewController: HomeFeedVC)
+                window!.rootViewController = navigationController
  
         }
         
         return true
+    }
+    
+    func logOut() {
+        // Logout the current user
+        PFUser.logOutInBackground(block: { (error) in
+            if let error = error {
+                print(error.localizedDescription)
+            } else {
+                
+                print("Successful loggout")
+                // Load and show the login view controller
+                let storyboard = UIStoryboard(name: "Main", bundle: nil)
+                let loginVC = storyboard.instantiateViewController(withIdentifier: "MainVC") as! LoginViewController
+                
+                UIView.transition(with: self.window!, duration: 0.4, options: .transitionCrossDissolve , animations: {
+                    self.window?.rootViewController = loginVC
+                }, completion: { completed in
+                    // maybe do something here
+                })
+                
+                //NOTE:
+                //This below presented the mainVC from HomeFeedVC but not sure how the stack
+                //deals by doing this, therefore I did that all this happened in the delegate
+                //by using window!.rootViewController
+                //self.present(loginViewController, animated: true, completion: nil)
+            }
+        })
     }
 
     func applicationWillResignActive(_ application: UIApplication) {

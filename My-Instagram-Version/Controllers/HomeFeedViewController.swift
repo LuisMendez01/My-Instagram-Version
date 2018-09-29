@@ -68,21 +68,31 @@ class HomeFeedViewController: UIViewController {
     
     @objc func LogOut(){
         
-        // Logout the current user
-        PFUser.logOutInBackground(block: { (error) in
-            if let error = error {
-                print("Username was not logged out")
-                print(error.localizedDescription)
-            } else {
-                print("User was logged out succesfully")
-                print("User logged out: \(String(describing: PFUser.current()))")
-                
-                let storyboard = UIStoryboard(name: "Main", bundle: nil)
-                let loginViewController = storyboard.instantiateViewController(withIdentifier: "MainVC") as! LoginViewController
-                //UIWindow?.rootViewController = loginViewController
-                self.present(loginViewController, animated: true, completion: nil)
-                
-                }//else
-        })
+        //Grab a reference to the presenting VC
+        let thePresenter = self.presentingViewController
+        //if NavBar presented it
+        //let thePresenter = self.navigationController.viewControllers.objectAtIndex:self.navigationController.viewControllers.count - 2
+        
+        if thePresenter is LoginViewController {
+            print("Dismiss performed segue from LoginVC logout right here and then dismiss")
+            
+            // Logout the current user
+            PFUser.logOutInBackground(block: { (error) in
+                if let error = error {
+                    print(error.localizedDescription)
+                } else {
+                    
+                    print("Successful loggout")
+                }})
+            
+            //dismiss if coming from segue from LoginVC,
+            //if coming from rootVC in delegate for persisted user then this won't do anything
+            dismiss(animated: true, completion: nil)
+        } else {
+            print("Loggin out from NotificationCenter in Delegate to return to main controller")
+            // Logout the current user
+            NotificationCenter.default.post(name: NSNotification.Name("didLogout"), object: nil)
+        }
+        
     }
 }
