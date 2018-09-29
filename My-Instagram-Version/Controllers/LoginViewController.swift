@@ -14,12 +14,16 @@ class LoginViewController: UIViewController {
     @IBOutlet weak var usernameField: UITextField!
     @IBOutlet weak var passwordField: UITextField!
     @IBOutlet weak var messageField: UITextView!
-    
+    @IBOutlet weak var defaultImageView: UIImageView!
     /*******************************************
      * UIVIEW CONTROLLER LIFECYCLES FUNCTIONS *
      *******************************************/
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        //to make it round
+        defaultImageView.layer.cornerRadius = defaultImageView.bounds.height / 2
+        defaultImageView.clipsToBounds = true
         
         print("User is: \(String(describing: PFUser.current()))")
         

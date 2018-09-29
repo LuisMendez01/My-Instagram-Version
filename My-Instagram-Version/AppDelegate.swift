@@ -33,7 +33,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             print("Logout notification received")
             // TODO: Logout the User
             // TODO: Load and show the login view controller
-            self.logOut()
+            self.mainVCisLoginVCNow()
         }
         
         print("User appDelegate: \(String(describing: PFUser.current()))")
@@ -56,31 +56,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         return true
     }
     
-    func logOut() {
-        // Logout the current user
-        PFUser.logOutInBackground(block: { (error) in
-            if let error = error {
-                print(error.localizedDescription)
-            } else {
+    func mainVCisLoginVCNow() {
+
+        // Load and show the login view controller
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        let loginVC = storyboard.instantiateViewController(withIdentifier: "MainVC") as! LoginViewController
                 
-                print("Successful loggout")
-                // Load and show the login view controller
-                let storyboard = UIStoryboard(name: "Main", bundle: nil)
-                let loginVC = storyboard.instantiateViewController(withIdentifier: "MainVC") as! LoginViewController
-                
-                UIView.transition(with: self.window!, duration: 0.4, options: .transitionCrossDissolve , animations: {
-                    self.window?.rootViewController = loginVC
-                }, completion: { completed in
+        UIView.transition(with: self.window!, duration: 0.4, options: .transitionCrossDissolve , animations: {
+            self.window?.rootViewController = loginVC
+            }, completion: { completed in
                     // maybe do something here
-                })
-                
-                //NOTE:
-                //This below presented the mainVC from HomeFeedVC but not sure how the stack
-                //deals by doing this, therefore I did that all this happened in the delegate
-                //by using window!.rootViewController
-                //self.present(loginViewController, animated: true, completion: nil)
-            }
-        })
+            })
     }
 
     func applicationWillResignActive(_ application: UIApplication) {

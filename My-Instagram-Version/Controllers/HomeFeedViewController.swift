@@ -20,8 +20,8 @@ class HomeFeedViewController: UIViewController {
         /*********Title In Nav Bar*******/
         setTitleInNavBar()
         
-        /*******Back btn to on HomeFeedVC to LoginVC In Nav Bar*****/
-        setNavBarBackBtn()
+        /*******Logout btn to LoginVC & Compose btn to ComposeVC in Nav Bar*****/
+        setNavBarSidesBtns()
         
         print("User is homeFeed: \(String(describing: PFUser.current()))")
         
@@ -39,7 +39,7 @@ class HomeFeedViewController: UIViewController {
             .strokeColor : UIColor.white,
             .foregroundColor : UIColor(cgColor: #colorLiteral(red: 0.1298420429, green: 0.1298461258, blue: 0.1298439503, alpha: 1)),  /*UIColor(red: 0.5, green: 0.25, blue: 0.15, alpha: 0.8)*/
             .strokeWidth : -1,
-            .font : UIFont.boldSystemFont(ofSize: 25)
+            .font : UIFont.boldSystemFont(ofSize: 23)
         ]
         
         //NSMutableAttributedString(string: "0", attributes: strokeTextAttributes)
@@ -52,9 +52,11 @@ class HomeFeedViewController: UIViewController {
         navigationItem.titleView = titleLabel
     }
     
-    func setNavBarBackBtn(){
+    func setNavBarSidesBtns(){
         
         navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Logout", style: .plain, target: self, action: #selector(LogOut))
+        
+        navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(named: "insta_camera_btn.png"), style: .plain, target: self, action: #selector(goToCompose))
         
         //navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(LogOut))
         //navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Add", style: .plain, target: self, action: #selector(LogOut))
@@ -68,6 +70,15 @@ class HomeFeedViewController: UIViewController {
     
     @objc func LogOut(){
         
+        // Logout the current user
+        PFUser.logOutInBackground(block: { (error) in
+            if let error = error {
+                print(error.localizedDescription)
+            } else {
+                
+                print("Successful loggout")
+            }})
+        
         //Grab a reference to the presenting VC
         let thePresenter = self.presentingViewController
         //if NavBar presented it
@@ -76,23 +87,19 @@ class HomeFeedViewController: UIViewController {
         if thePresenter is LoginViewController {
             print("Dismiss performed segue from LoginVC logout right here and then dismiss")
             
-            // Logout the current user
-            PFUser.logOutInBackground(block: { (error) in
-                if let error = error {
-                    print(error.localizedDescription)
-                } else {
-                    
-                    print("Successful loggout")
-                }})
-            
             //dismiss if coming from segue from LoginVC,
             //if coming from rootVC in delegate for persisted user then this won't do anything
             dismiss(animated: true, completion: nil)
         } else {
             print("Loggin out from NotificationCenter in Delegate to return to main controller")
-            // Logout the current user
+            
+            // Notify user was logged out and changed main VC to LoginVC 
             NotificationCenter.default.post(name: NSNotification.Name("didLogout"), object: nil)
         }
         
+    }
+    
+    @objc func goToCompose(){
+        performSegue(withIdentifier: "composeSegue", sender: nil)
     }
 }
