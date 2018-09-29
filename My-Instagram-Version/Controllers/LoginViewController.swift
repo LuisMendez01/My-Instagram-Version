@@ -15,12 +15,24 @@ class LoginViewController: UIViewController {
     @IBOutlet weak var passwordField: UITextField!
     @IBOutlet weak var messageField: UITextView!
     
+    /*******************************************
+     * UIVIEW CONTROLLER LIFECYCLES FUNCTIONS *
+     *******************************************/
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        // Do any additional setup after loading the view.
+        
+        print("User is: \(String(describing: PFUser.current()))")
+        
     }
+    
+    /************************
+     * MY CREATED FUNCTIONS *
+     ************************/
+    
 
+    /***********************
+     * IBACTIONS FUNCTIONS *
+     ***********************/
     @IBAction func onSignIn(_ sender: Any) {
         
         PFUser.logInWithUsername(inBackground: usernameField.text!, password: passwordField.text!){
@@ -32,10 +44,12 @@ class LoginViewController: UIViewController {
             } else {
                 print("Error logging in")
                 print(error?.localizedDescription as Any)
+                self.messageField.text = error?.localizedDescription
             }
             
         }
     }
+    
     @IBAction func onSignUp(_ sender: Any) {
         
         let newUser = PFUser()

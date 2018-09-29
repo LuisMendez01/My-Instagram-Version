@@ -28,6 +28,18 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 configuration.server = "https://instagram-like-app.herokuapp.com/parse"
             })
         )
+        print("User appDelegate: \(String(describing: PFUser.current()))")
+        // check if user is logged in.
+        if PFUser.current() != nil {
+            
+            let storyboard = UIStoryboard(name: "Main", bundle: nil)
+            // view controller currently being set in Storyboard as default will be overridden
+            let vc = storyboard.instantiateViewController(withIdentifier: "homeFeedVC") as! HomeFeedViewController
+            
+            let navigationController = UINavigationController(rootViewController: vc)
+            window!.rootViewController = navigationController
+ 
+        }
         
         return true
     }
