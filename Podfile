@@ -6,6 +6,8 @@ target 'My-Instagram-Version' do
   use_frameworks!
 
   # Pods for My-Instagram-Version
-	pod 'Parse'
+    pod 'Parse'
+    pod 'Parse/UI'
+        
 
 end

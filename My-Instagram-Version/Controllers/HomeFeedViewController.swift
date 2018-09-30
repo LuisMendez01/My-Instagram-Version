@@ -55,10 +55,16 @@ class HomeFeedViewController: UIViewController, UITableViewDelegate, UITableView
     
     func fetchData(){
         
+        let post = Post()
+        //Get the current user and assign it to "author" field. "author" field is now of Pointer type
+        post.author = PFUser.current()!
+        
         // construct query
         //let query : PFQuery = PFQuery(className: "_User")
         let query = Post.query()
-        query?.whereKey("likesCount", lessThan: 100)
+        query?.order(byDescending: "createAt")
+        //query?.whereKey("likesCount", lessThan: 100)
+        query?.includeKey("author")
         query?.limit = 20
 
         // fetch data asynchronously
@@ -226,22 +232,26 @@ class HomeFeedViewController: UIViewController, UITableViewDelegate, UITableView
          // Use the section number to get the right URL
          // let label = ...
          */
-        let labelDate = UILabel(frame: CGRect(x: 55, y: 10, width: 250, height: 30))
-        labelDate.textAlignment = .left
-//        let author = posts[section]["author"] as? [String:Any]
-//        print("author \(author)")
-        do {
-            if let json = try JSONSerialization.jsonObject(with: posts[section]["author"]!?, options:.allowFragments) as? [String:Any] {
-                print(json)
-            }
-        } catch let err{
-            print(err.localizedDescription)
-        }
-//        if let a = author!["objectId"] {
-//        labelDate.text = a as? String//dateFormatter.string(from: date ?? Date())
-//        }
+        let labelUsername = UILabel(frame: CGRect(x: 55, y: 10, width: 250, height: 30))
+        labelUsername.textAlignment = .left
         
-        headerView.addSubview(labelDate)
+        //to worked on
+        if let author = posts[section]["author"]{
+            let author = (author as! PFObject).objectId!
+            
+            print("author id: \(author)")
+        }
+        
+        //Getting username from user
+        if let author2 = PFUser.current() {
+            let author2 = (author2 as PFObject)
+            
+            labelUsername.text = author2.value(forKeyPath: "username") as? String
+            print("author2 id: \(author2)")
+        }
+        
+        //dateFormatter.string(from: date ?? Date())
+        headerView.addSubview(labelUsername)
         
         return headerView
     }
