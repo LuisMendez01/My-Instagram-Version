@@ -9,7 +9,87 @@
 import UIKit
 import Parse
 
-class HomeFeedViewController: UIViewController {
+class HomeFeedViewController: UIViewController, UITableViewDelegate, UITableViewDataSource  {
+    
+     var posts: [PFObject] = []
+     private var myTableView: UITableView!
+    
+    /***********************
+     * TABLEVIEW FUNCTIONS *
+     ***********************/
+    func numberOfSections(in tableView: UITableView) -> Int {
+        print("posts.count: \(posts.count)")
+        return 3
+    }
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return 1
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        
+        let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath as IndexPath)
+        
+        cell.textLabel!.text = "Que!"//"\(posts[indexPath.row])"
+        return cell
+    }
+    
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        
+        let headerView = UIView(frame: CGRect(x: 0, y: 0, width: 320, height: 50))
+        //headerView.backgroundColor = UIColor(white: 1, alpha: 0.9)
+        headerView.backgroundColor = #colorLiteral(red: 0.6156862745, green: 0.6745098039, blue: 0.7490196078, alpha: 1)
+        
+        let profileView = UIImageView(frame: CGRect(x: 10, y: 10, width: 30, height: 30))
+        profileView.clipsToBounds = true
+        profileView.layer.cornerRadius = 15;
+        profileView.layer.borderColor = UIColor(white: 0.7, alpha: 0.8).cgColor
+        profileView.layer.borderWidth = 1;
+        
+        // Set the avatar
+        profileView.image = UIImage(named: "vegeta.png")
+        //profileView.af_setImage(withURL: URL(string: "https://api.tumblr.com/v2/blog/humansofnewyork.tumblr.com/avatar")!)
+        headerView.addSubview(profileView)
+        /*
+        let post = posts[section]
+        let stringDate = post["date"] as? String
+        
+        let dateFormatter = DateFormatter()//dateFormat has to look same as string data coming in
+        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss zzz"//data extracted looks like this -> 2018-09-03 22:49:17 GMT
+        dateFormatter.locale = Locale(identifier: "en_US_POSIX")
+        dateFormatter.timeZone = TimeZone(abbreviation: "GMT+0:00") //Current time zone
+        dateFormatter.isLenient = true
+        //print(type(of: stringDate))
+        
+        let date = dateFormatter.date(from: stringDate!)
+        //print(date!)
+        
+        //this will make date coming like this 2018-09-03 22:49:17 GMT turn like this //MMM d, yyyy, HH:mm a
+        dateFormatter.dateStyle = .medium
+        dateFormatter.timeStyle = .short
+        
+        // Add a UILabel for the date here
+        // Use the section number to get the right URL
+        // let label = ...
+ */
+        let labelDate = UILabel(frame: CGRect(x: 55, y: 10, width: 250, height: 30))
+        labelDate.textAlignment = .left
+        labelDate.text = "nada!"//dateFormatter.string(from: date ?? Date())
+        
+        headerView.addSubview(labelDate)
+        
+        return headerView
+    }
+    
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return 50
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        print("Num: \(indexPath.section)")
+        print("Value: \(posts[indexPath.section])")
+    }
+    
 
     /*******************************************
      * UIVIEW CONTROLLER LIFECYCLES FUNCTIONS *
@@ -23,6 +103,12 @@ class HomeFeedViewController: UIViewController {
         /*******Logout btn to LoginVC & Compose btn to ComposeVC in Nav Bar*****/
         setNavBarSidesBtns()
         
+        /*********Set TableView*******/
+        setTableView()
+        
+        /********* Fetch data from Parse-server ********/
+        fetchData()
+        
         print("User is homeFeed: \(String(describing: PFUser.current()))")
         
     }
@@ -30,6 +116,44 @@ class HomeFeedViewController: UIViewController {
     /************************
      * MY CREATED FUNCTIONS *
      ************************/
+    
+    func setTableView(){
+        
+        //let barHeight: CGFloat = UIApplication.shared.statusBarFrame.size.height
+        let displayWidth: CGFloat = self.view.frame.width//self is this VC width
+        let displayHeight: CGFloat = self.view.frame.height//self is this VC height
+        
+        myTableView = UITableView(frame: CGRect(x: 0, y: 0, width: displayWidth, height: displayHeight))
+        myTableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
+        myTableView.dataSource = self
+        myTableView.delegate = self
+        self.view.addSubview(myTableView)
+    }
+    
+    func fetchData(){
+        
+        // construct query
+        //let query : PFQuery = PFQuery(className: "_User")
+        let query = Post.query()
+        query?.whereKey("likesCount", lessThan: 100)
+        query?.limit = 20
+        
+        // fetch data asynchronously
+        query?.findObjectsInBackground(block: { (incomingPosts, error) in
+            if let incomingPosts = incomingPosts {
+                
+                // do something with the array of object returned by the call
+                self.posts = incomingPosts
+                print(incomingPosts)
+                
+                // Reload the tableView now that there is new data
+                self.myTableView.reloadData()
+            } else {
+                print(error?.localizedDescription as Any)
+            }
+            })
+    }
+    
     func setTitleInNavBar(){
         
         let titleLabel = UILabel()//for the title of the page
@@ -57,15 +181,6 @@ class HomeFeedViewController: UIViewController {
         navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Logout", style: .plain, target: self, action: #selector(LogOut))
         
         navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(named: "insta_camera_btn.png"), style: .plain, target: self, action: #selector(goToCompose))
-        
-        //navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(LogOut))
-        //navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Add", style: .plain, target: self, action: #selector(LogOut))
-        /*
-        let add = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: nil)
-        let play = UIBarButtonItem(title: "Play", style: .plain, target: self, action: nil)
-        
-        navigationItem.rightBarButtonItems = [add, play]
-         */
     }
     
     @objc func LogOut(){
@@ -103,3 +218,10 @@ class HomeFeedViewController: UIViewController {
         performSegue(withIdentifier: "composeSegue", sender: nil)
     }
 }
+
+/*
+ let add = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: nil)
+ let play = UIBarButtonItem(title: "Play", style: .plain, target: self, action: nil)
+ 
+ navigationItem.rightBarButtonItems = [add, play]
+ */
