@@ -12,6 +12,7 @@
 		05120975215C9CC3008DA4C3 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 05120974215C9CC3008DA4C3 /* Assets.xcassets */; };
 		05120978215C9CC3008DA4C3 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 05120976215C9CC3008DA4C3 /* LaunchScreen.storyboard */; };
 		05120981215D9E9E008DA4C3 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05120980215D9E9E008DA4C3 /* LoginViewController.swift */; };
+		0512098421606C15008DA4C3 /* Post.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0512098321606C15008DA4C3 /* Post.swift */; };
 		4CE00044AA0AD6E24AA8A1E8 /* Pods_My_Instagram_Version.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F6A8236674225033A343977D /* Pods_My_Instagram_Version.framework */; };
 		F71F5032215ED77E00528A95 /* HomeFeedViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F71F5031215ED77E00528A95 /* HomeFeedViewController.swift */; };
 		F71F5034215FED5B00528A95 /* ComposeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F71F5033215FED5B00528A95 /* ComposeViewController.swift */; };
@@ -25,6 +26,7 @@
 		05120977215C9CC3008DA4C3 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		05120979215C9CC3008DA4C3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		05120980215D9E9E008DA4C3 /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
+		0512098321606C15008DA4C3 /* Post.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Post.swift; sourceTree = "<group>"; };
 		72C3C0795CFAA21CDE48E55D /* Pods-My-Instagram-Version.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-My-Instagram-Version.debug.xcconfig"; path = "Pods/Target Support Files/Pods-My-Instagram-Version/Pods-My-Instagram-Version.debug.xcconfig"; sourceTree = "<group>"; };
 		F6A8236674225033A343977D /* Pods_My_Instagram_Version.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_My_Instagram_Version.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		F71F5031215ED77E00528A95 /* HomeFeedViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeFeedViewController.swift; sourceTree = "<group>"; };
@@ -65,6 +67,7 @@
 		0512096C215C9CC1008DA4C3 /* My-Instagram-Version */ = {
 			isa = PBXGroup;
 			children = (
+				0512098221606B5E008DA4C3 /* Model */,
 				0512097F215D9E84008DA4C3 /* Controllers */,
 				0512096D215C9CC1008DA4C3 /* AppDelegate.swift */,
 				05120971215C9CC1008DA4C3 /* Main.storyboard */,
@@ -83,6 +86,14 @@
 				F71F5033215FED5B00528A95 /* ComposeViewController.swift */,
 			);
 			path = Controllers;
+			sourceTree = "<group>";
+		};
+		0512098221606B5E008DA4C3 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				0512098321606C15008DA4C3 /* Post.swift */,
+			);
+			path = Model;
 			sourceTree = "<group>";
 		};
 		C239B768383AF54DF52735DA /* Frameworks */ = {
@@ -228,6 +239,7 @@
 				0512096E215C9CC1008DA4C3 /* AppDelegate.swift in Sources */,
 				F71F5032215ED77E00528A95 /* HomeFeedViewController.swift in Sources */,
 				F71F5034215FED5B00528A95 /* ComposeViewController.swift in Sources */,
+				0512098421606C15008DA4C3 /* Post.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

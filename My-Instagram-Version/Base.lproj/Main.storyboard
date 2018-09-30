@@ -96,7 +96,19 @@
                     <view key="view" contentMode="scaleToFill" id="yHG-EI-I8R">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="KsU-cT-Fq2">
+                                <rect key="frame" x="0.0" y="88" width="414" height="774"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            </tableView>
+                        </subviews>
                         <color key="backgroundColor" red="0.20000000000000001" green="0.20000000000000001" blue="0.40000000000000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <constraints>
+                            <constraint firstItem="KsU-cT-Fq2" firstAttribute="leading" secondItem="h7J-Vz-B0B" secondAttribute="leading" id="DOh-dA-ygb"/>
+                            <constraint firstItem="h7J-Vz-B0B" firstAttribute="bottom" secondItem="KsU-cT-Fq2" secondAttribute="bottom" id="UWd-UA-aWC"/>
+                            <constraint firstItem="h7J-Vz-B0B" firstAttribute="trailing" secondItem="KsU-cT-Fq2" secondAttribute="trailing" id="VeC-gq-Dds"/>
+                            <constraint firstItem="KsU-cT-Fq2" firstAttribute="top" secondItem="h7J-Vz-B0B" secondAttribute="top" id="nGD-P2-iSL"/>
+                        </constraints>
                         <viewLayoutGuide key="safeArea" id="h7J-Vz-B0B"/>
                     </view>
                     <navigationItem key="navigationItem" id="AcW-SB-nor"/>
@@ -124,7 +136,7 @@
                                 </constraints>
                             </imageView>
                             <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="Nct-oE-q9B">
-                                <rect key="frame" x="82" y="410" width="250" height="30"/>
+                                <rect key="frame" x="82" y="388" width="250" height="30"/>
                                 <nil key="textColor"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits"/>
@@ -132,7 +144,7 @@
                         </subviews>
                         <color key="backgroundColor" red="0.0" green="0.56904578210000001" blue="0.57461684940000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
-                            <constraint firstItem="Nct-oE-q9B" firstAttribute="top" secondItem="PRo-XC-wdt" secondAttribute="bottom" constant="22" id="CmC-QD-pr9"/>
+                            <constraint firstItem="Nct-oE-q9B" firstAttribute="top" secondItem="PRo-XC-wdt" secondAttribute="bottom" id="5kO-aV-WPV"/>
                             <constraint firstItem="PRo-XC-wdt" firstAttribute="centerX" secondItem="rfp-mf-Ojv" secondAttribute="centerX" id="E6W-F9-hNc"/>
                             <constraint firstItem="PRo-XC-wdt" firstAttribute="top" secondItem="fze-G2-nc0" secondAttribute="top" constant="50" id="b4f-lH-BSG"/>
                             <constraint firstItem="Nct-oE-q9B" firstAttribute="width" secondItem="PRo-XC-wdt" secondAttribute="width" id="g1S-vf-Ozl"/>
@@ -142,6 +154,7 @@
                     </view>
                     <navigationItem key="navigationItem" id="a61-ja-gpf"/>
                     <connections>
+                        <outlet property="captionField" destination="Nct-oE-q9B" id="Pu0-rZ-EgP"/>
                         <outlet property="imageToPost" destination="PRo-XC-wdt" id="58d-B1-mTn"/>
                     </connections>
                 </viewController>

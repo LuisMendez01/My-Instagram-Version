@@ -11,6 +11,7 @@ import UIKit
 class ComposeViewController: UIViewController, UINavigationControllerDelegate, UIImagePickerControllerDelegate {
 
     @IBOutlet weak var imageToPost: UIImageView!
+    @IBOutlet weak var captionField: UITextField!
     
     /*******************************************
      * UIVIEW CONTROLLER LIFECYCLES FUNCTIONS *
@@ -34,11 +35,6 @@ class ComposeViewController: UIViewController, UINavigationControllerDelegate, U
         imageToPost.isUserInteractionEnabled = true
         imageToPost.addGestureRecognizer(imageTap)
         
-    }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        print("view will appear")
     }
     
     /************************
@@ -82,11 +78,30 @@ class ComposeViewController: UIViewController, UINavigationControllerDelegate, U
          */
     }
     
+    private func resize(image: UIImage, newSize: CGSize) -> UIImage {
+        
+        let resizeImageView = UIImageView(frame: CGRect(x:0, y:0, width: newSize.width, height: newSize.height))
+        resizeImageView.contentMode = UIView.ContentMode.scaleAspectFill
+        resizeImageView.image = image
+        
+        UIGraphicsBeginImageContext(resizeImageView.frame.size)
+        resizeImageView.layer.render(in: UIGraphicsGetCurrentContext()!)
+        let newImage = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        return newImage!
+    }
+    
+    /*******************
+     * @OBJC FUNCTIONS *
+     *******************/
     @objc func cancelBtn(){
         dismiss(animated: true, completion: nil)
     }
     
     @objc func shareBtn(){
+        
+        Post.postUserImage(image: imageToPost.image, withCaption: captionField.text, withCompletion: nil)
+        
         dismiss(animated: true, completion: nil)
     }
     
@@ -94,7 +109,7 @@ class ComposeViewController: UIViewController, UINavigationControllerDelegate, U
         
         let PickerVC = UIImagePickerController()
         PickerVC.delegate = self
-        PickerVC.allowsEditing = true
+        PickerVC.allowsEditing = false
         
         if UIImagePickerController.isSourceTypeAvailable(.camera) {
             print("Camera is available 📸")
@@ -108,12 +123,15 @@ class ComposeViewController: UIViewController, UINavigationControllerDelegate, U
         self.present(PickerVC, animated: true, completion: nil)
     }
     
+    /****************************
+     * PICKERDELEGATE FUNCTIONS *
+     ****************************/
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         
         // Get the image captured by the UIImagePickerController
         //Set image as UIImage if all good then set it to our image variable
         if let editedImage = info[.editedImage] as? UIImage {
-            print("editedImage was uploaded")
+            print("editedImage was taken")
             //set the image size in terms of width and height, will be equal to almost 5MB, what I want
             let size = CGSize(width: 1000, height: 1000)
             
@@ -122,7 +140,7 @@ class ComposeViewController: UIViewController, UINavigationControllerDelegate, U
             imageToPost.image = imageEdited
             
         } else if let image = info[.originalImage] as? UIImage {
-            print("Original Image was uploaded")
+            print("Original Image was taken")
             
             //set the image size in terms of width and height, will be equal to almost 1MB, what I want
             let size = CGSize(width: 1000, height: 1000)
@@ -135,26 +153,13 @@ class ComposeViewController: UIViewController, UINavigationControllerDelegate, U
             
         } else {
             //Error Message
-            print("There was an error uploading image")
+            print("There was an error uploading image to VC")
         }
         
         // Do something with the images (based on your use case)
         
         // Dismiss UIImagePickerController to go back to your original view controller
         dismiss(animated: true, completion: nil)
-    }
-    
-    private func resize(image: UIImage, newSize: CGSize) -> UIImage {
-        
-        let resizeImageView = UIImageView(frame: CGRect(x:0, y:0, width: newSize.width, height: newSize.height))
-        resizeImageView.contentMode = UIView.ContentMode.scaleAspectFill
-        resizeImageView.image = image
-        
-        UIGraphicsBeginImageContext(resizeImageView.frame.size)
-        resizeImageView.layer.render(in: UIGraphicsGetCurrentContext()!)
-        let newImage = UIGraphicsGetImageFromCurrentImageContext()
-        UIGraphicsEndImageContext()
-        return newImage!
     }
 
 }
