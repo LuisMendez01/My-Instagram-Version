@@ -108,30 +108,30 @@ class ComposeViewController: UIViewController, UINavigationControllerDelegate, U
         self.present(PickerVC, animated: true, completion: nil)
     }
     
-    @objc func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         
         // Get the image captured by the UIImagePickerController
         //Set image as UIImage if all good then set it to our image variable
-        if let image = info["UIImagePickerControllerOriginalImage"] as? UIImage {
-            print("Image was uploaded")
-            
-            //set the image size in terms of width and height, will be equal to almost 1MB, what I want
-            let size = CGSize(width: 200, height: 200)
-            
-            //resize image to be less than 1MB
-            let img = resize(image: image, newSize: size)
-            
-            //put it in the image view
-            imageToPost.image = img
-            
-        } else if let editedImage = info["UIImagePickerControllerEditedImage"] as? UIImage {
+        if let editedImage = info[.editedImage] as? UIImage {
             print("editedImage was uploaded")
             //set the image size in terms of width and height, will be equal to almost 5MB, what I want
             let size = CGSize(width: 1000, height: 1000)
             
             //resize image to be less than 1MB
             let imageEdited = resize(image: editedImage, newSize: size)
-             imageToPost.image = imageEdited
+            imageToPost.image = imageEdited
+            
+        } else if let image = info[.originalImage] as? UIImage {
+            print("Original Image was uploaded")
+            
+            //set the image size in terms of width and height, will be equal to almost 1MB, what I want
+            let size = CGSize(width: 1000, height: 1000)
+            
+            //resize image to be less than 1MB
+            let img = resize(image: image, newSize: size)
+            
+            //put it in the image view
+            imageToPost.image = img
             
         } else {
             //Error Message
