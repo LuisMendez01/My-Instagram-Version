@@ -11,8 +11,15 @@ import Parse
 
 class HomeFeedViewController: UIViewController, UITableViewDelegate, UITableViewDataSource  {
     
-     var posts: [PFObject] = []
-     private var myTableView: UITableView!
+    var posts: [PFObject] = []
+    var checked: [Bool]!//for checkmark on row clicked, hide/show footer on row click
+    var myTableView: UITableView!
+    
+    //set image from Parse-Server
+    let PFPhotoView = PFImageView()
+    
+    //Initialize a UIRefreshControl
+    let refreshControl = UIRefreshControl()
 
     /*******************************************
      * UIVIEW CONTROLLER LIFECYCLES FUNCTIONS *
@@ -32,6 +39,12 @@ class HomeFeedViewController: UIViewController, UITableViewDelegate, UITableView
         /********* Fetch data from Parse-server ********/
         fetchData()
         
+        refreshControl.addTarget(self, action: #selector(refreshControlAction(_:)), for: .valueChanged)
+        
+        // add refresh control to table view
+        myTableView.insertSubview(refreshControl, at: 0)
+
+        
         print("User is homeFeed: \(String(describing: PFUser.current()))")
         
     }
@@ -40,16 +53,28 @@ class HomeFeedViewController: UIViewController, UITableViewDelegate, UITableView
      * MY CREATED FUNCTIONS *
      ************************/
     
-    func setTableView(){
+    @objc func refreshControlAction(_ refreshControl: UIRefreshControl){
         
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2) { // change 2 to desired number of seconds
+            // Your code with delay
+            self.fetchData()//get morerecent posts
+        }
+    }
+    
+    func setTableView(){
+
         //let barHeight: CGFloat = UIApplication.shared.statusBarFrame.size.height
         let displayWidth: CGFloat = self.view.frame.width//self is this VC width
         let displayHeight: CGFloat = self.view.frame.height//self is this VC height
-        
-        myTableView = UITableView(frame: CGRect(x: 0, y: 0, width: displayWidth, height: displayHeight))
-        myTableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
+
+        myTableView = UITableView(frame: CGRect(x: 0, y: 0, width: displayWidth, height: displayHeight), style: .grouped)
+        myTableView.register(PostTableViewCell.self, forCellReuseIdentifier: "cell")
         myTableView.dataSource = self
         myTableView.delegate = self
+        
+        myTableView.rowHeight = 350//UITableView.automaticDimension
+        myTableView.estimatedRowHeight = 300//if all rows vary in size
+        //estimatedHeightForRowAtIndexPath//to estimate height on different rows if they variate a lot in size
         self.view.addSubview(myTableView)
     }
     
@@ -62,9 +87,9 @@ class HomeFeedViewController: UIViewController, UITableViewDelegate, UITableView
         // construct query
         //let query : PFQuery = PFQuery(className: "_User")
         let query = Post.query()
-        query?.order(byDescending: "createAt")
+        query?.order(byAscending: "createAt")
         //query?.whereKey("likesCount", lessThan: 100)
-        query?.includeKey("author")
+        //query?.includeKey("author")
         query?.limit = 20
 
         // fetch data asynchronously
@@ -83,9 +108,14 @@ class HomeFeedViewController: UIViewController, UITableViewDelegate, UITableView
                 // do something with the array of object returned by the call
                 self.posts = incomingPosts
                 print(incomingPosts)
-
+                
+                //populate this array to false as we need all footers to show to start at
+                self.checked = [Bool](repeating: false, count: self.posts.count+1)
+                
                 // Reload the tableView now that there is new data
                 self.myTableView.reloadData()
+                self.refreshControl.endRefreshing()//stop refresh when data has been acquired
+                
             } else {
                 print(error?.localizedDescription as Any)
             }
@@ -188,9 +218,26 @@ class HomeFeedViewController: UIViewController, UITableViewDelegate, UITableView
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-        let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath as IndexPath)
+        let cell = myTableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath as IndexPath) as! PostTableViewCell
         
-        cell.textLabel!.text = "Que!"//"\(posts[indexPath.row])"
+        
+/*
+        if let img = self.posts[indexPath.row]["media"]{
+            let img = (img as! PFFile).name
+
+            print("esto es el file name: \(img)")
+        }
+*/
+        PFPhotoView.file = (self.posts[indexPath.section]["media"] as! PFFile)
+        print("imagen file: \(String(describing: self.PFPhotoView.file))")
+
+        print("section #: \(indexPath.section)")
+        PFPhotoView.load(inBackground: {(imagen, error) in
+                cell.myImagePost.image = imagen
+            //cell.stateLabel.text = cityState.last
+        })
+        
+        //cell.textLabel!.text = "Que!"//"\(posts[indexPath.row])"
         return cell
     }
     
@@ -201,14 +248,31 @@ class HomeFeedViewController: UIViewController, UITableViewDelegate, UITableView
         headerView.backgroundColor = #colorLiteral(red: 0.6156862745, green: 0.6745098039, blue: 0.7490196078, alpha: 1)
         
         let profileView = UIImageView(frame: CGRect(x: 10, y: 10, width: 30, height: 30))
+        //profileView.Cl  = PFImageView
         profileView.clipsToBounds = true
         profileView.layer.cornerRadius = 15;
         profileView.layer.borderColor = UIColor(white: 0.7, alpha: 0.8).cgColor
         profileView.layer.borderWidth = 1;
         
+//        if let img = self.posts[section]["media"]{
+//            let img = (img as! PFFile).name
+//
+//            print("esto es el file name: \(img)")
+//        }
+//
+//        //set image from Parse-Server
+//        let PFPhotoView = PFImageView()
+//
+//        PFPhotoView.file = (self.posts[section]["media"] as! PFFile)
+//        print("imagen file: \(String(describing: self.imagen.file))")
+//
+//        print("section #: \(section)")
+//        PFPhotoView.load(inBackground: {(imagen, error) in
+//            profileView.image = imagen
+//        })
+    
         // Set the avatar
         profileView.image = UIImage(named: "vegeta.png")
-        //profileView.af_setImage(withURL: URL(string: "https://api.tumblr.com/v2/blog/humansofnewyork.tumblr.com/avatar")!)
         headerView.addSubview(profileView)
         /*
          let post = posts[section]
@@ -260,9 +324,112 @@ class HomeFeedViewController: UIViewController, UITableViewDelegate, UITableView
         return 50
     }
     
+    func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
+        
+        let footerView = UIView(frame: CGRect(x: 0, y: 0, width: 320, height: 50))
+        //headerView.backgroundColor = UIColor(white: 1, alpha: 0.9)
+        footerView.backgroundColor = #colorLiteral(red: 0.5563425422, green: 0.9793455005, blue: 0, alpha: 1)
+        
+        /**************show the captions*******************/
+        let labelCaption = UILabel(frame: CGRect(x: 10, y: 10, width: 250, height: 30))
+        labelCaption.textAlignment = .left
+        
+        //to worked on
+        if let caption = posts[section]["caption"]{
+            let caption = caption
+            
+            print("Caption : \(caption)")
+            labelCaption.text = caption as? String
+        }
+        
+        footerView.addSubview(labelCaption)
+        
+        /**************show the likes count*******************/
+        let labelLikesCount = UILabel(frame: CGRect(x: 10, y: 40, width: 250, height: 30))
+        labelLikesCount.textAlignment = .left
+        
+        //to worked on
+        if let likesCount = posts[section]["likesCount"]{
+            let likesCount = likesCount
+            
+            print("LikesCount : \(likesCount)")
+            labelLikesCount.text = "\(likesCount) likes"
+        }
+        
+        footerView.addSubview(labelLikesCount)
+        
+        /**************show the likes count*******************/
+        let labelCommentsCount = UILabel(frame: CGRect(x: 10, y: 70, width: 250, height: 30))
+        labelCommentsCount.textAlignment = .left
+        
+        //to worked on
+        if let commentsCount = posts[section]["likesCount"]{
+            let commentsCount = commentsCount
+            
+            print("commentsCount : \(commentsCount)")
+            labelCommentsCount.text = "\(commentsCount) comments"
+        }
+        
+        footerView.addSubview(labelCommentsCount)
+        
+        /**************show the likes count*******************/
+        let labelCreatedAt = UILabel(frame: CGRect(x: 10, y: 100, width: 250, height: 30))
+        labelCreatedAt.textAlignment = .left
+        
+        //to worked on
+        if let createdAt = posts[section].createdAt {
+            let createdAt = createdAt
+             
+            let dateFormatter = DateFormatter()//dateFormat has to look same as string data coming in
+            
+            let stringDate = dateFormatter.string(from: createdAt)
+            
+            dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss zzzz"//data extracted looks like this -> 2018-09-03 22:49:17 GMT
+            dateFormatter.locale = Locale(identifier: "en_US_POSIX")
+            dateFormatter.timeZone = TimeZone(abbreviation: "GMT+0:00") //Current time zone
+            dateFormatter.isLenient = true
+            //print(type(of: stringDate))
+             
+            let date = dateFormatter.date(from: stringDate)
+            //print(date!)
+             
+            //this will make date coming like this 2018-09-03 22:49:17 GMT turn like this //MMM d, yyyy, HH:mm a
+            dateFormatter.dateStyle = .medium
+            dateFormatter.timeStyle = .short
+            
+            print("createdAt : \(createdAt)")
+            let timeCreatedAt = dateFormatter.string(from: date ?? Date())
+            labelCreatedAt.text = "\(timeCreatedAt) time ago"
+        }
+        
+        footerView.addSubview(labelCreatedAt)
+        
+        return footerView
+    }
+    
+    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+        
+        //check for section clicked on
+        if checked[section] {
+            return 0
+        }
+        
+        return 130
+    }
+    
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         print("Num: \(indexPath.section)")
         print("Value: \(posts[indexPath.section])")
+        //change value of checked section to hide/show
+        checked[indexPath.section] = !checked[indexPath.section]
+        /*
+        UIView.animate(withDuration: 0.5, delay: 0.3, options: [.repeat, .curveEaseOut, .autoreverse], animations: {
+            
+            self.myTableView.reloadData()
+        }, completion: nil)
+ */
+        self.myTableView.reloadData()
+        self.myTableView.sectionFooterHeight = 0
     }
 }
 
