@@ -35,6 +35,9 @@ class ComposeViewController: UIViewController, UINavigationControllerDelegate, U
         imageToPost.isUserInteractionEnabled = true
         imageToPost.addGestureRecognizer(imageTap)
         
+        //make it first responder to start typing
+        captionField.becomeFirstResponder()
+        
     }
     
     /************************

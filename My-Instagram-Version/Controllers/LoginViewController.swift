@@ -21,11 +21,10 @@ class LoginViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        //to make it round
-        defaultImageView.layer.cornerRadius = defaultImageView.bounds.height / 2
-        defaultImageView.clipsToBounds = true
-        
         print("User is: \(String(describing: PFUser.current()))")
+        
+        //make it first responder to start typing
+        usernameField.becomeFirstResponder()
         
     }
     

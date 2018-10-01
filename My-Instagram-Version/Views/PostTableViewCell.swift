@@ -12,7 +12,7 @@ class PostTableViewCell: UITableViewCell {
 
     //let cityLabel = UILabel(), stateLabel = UILabel()
     //let myImagePost = UIImageView(frame: CGRect(x: 10, y: 10, width: 300, height: 300))
-    let myImagePost = UIImageView(frame: CGRect(x: 10, y: 10, width: 280, height: 280))
+    let myImagePost = UIImageView(frame: CGRect(x: 0, y: 0, width: tableWidth, height: tableWidth))
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)

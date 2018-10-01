@@ -9,6 +9,8 @@
 import UIKit
 import Parse
 
+var tableWidth: CGFloat = 0
+
 class HomeFeedViewController: UIViewController, UITableViewDelegate, UITableViewDataSource  {
     
     var posts: [PFObject] = []
@@ -66,15 +68,19 @@ class HomeFeedViewController: UIViewController, UITableViewDelegate, UITableView
         //let barHeight: CGFloat = UIApplication.shared.statusBarFrame.size.height
         let displayWidth: CGFloat = self.view.frame.width//self is this VC width
         let displayHeight: CGFloat = self.view.frame.height//self is this VC height
+        
+        //to be used in PostTableViewCell
+        tableWidth = displayWidth
 
         myTableView = UITableView(frame: CGRect(x: 0, y: 0, width: displayWidth, height: displayHeight), style: .grouped)
         myTableView.register(PostTableViewCell.self, forCellReuseIdentifier: "cell")
         myTableView.dataSource = self
         myTableView.delegate = self
         
-        myTableView.rowHeight = 350//UITableView.automaticDimension
+        myTableView.rowHeight = tableWidth//UITableView.automaticDimension
         myTableView.estimatedRowHeight = 300//if all rows vary in size
         //estimatedHeightForRowAtIndexPath//to estimate height on different rows if they variate a lot in size
+        
         self.view.addSubview(myTableView)
     }
     
@@ -222,7 +228,8 @@ class HomeFeedViewController: UIViewController, UITableViewDelegate, UITableView
         
         let cell = myTableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath as IndexPath) as! PostTableViewCell
         
-        
+        // No color when the user selects cell
+        cell.selectionStyle = .none
 /*
         if let img = self.posts[indexPath.row]["media"]{
             let img = (img as! PFFile).name
@@ -309,7 +316,7 @@ class HomeFeedViewController: UIViewController, UITableViewDelegate, UITableView
         
         let footerView = UIView(frame: CGRect(x: 0, y: 0, width: 320, height: 50))
         //headerView.backgroundColor = UIColor(white: 1, alpha: 0.9)
-        footerView.backgroundColor = #colorLiteral(red: 0.5563425422, green: 0.9793455005, blue: 0, alpha: 1)
+        footerView.backgroundColor = #colorLiteral(red: 0.8153101802, green: 0.8805506825, blue: 0.8921775818, alpha: 0.92)
         
         /**************show the captions*******************/
         let labelCaption = UILabel(frame: CGRect(x: 10, y: 10, width: 250, height: 30))
@@ -404,6 +411,7 @@ class HomeFeedViewController: UIViewController, UITableViewDelegate, UITableView
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         print("Num: \(indexPath.section)")
         print("Value: \(posts[indexPath.section])")
+        
         //change value of checked section to hide/show
         checked[indexPath.section] = !checked[indexPath.section]
         /*
@@ -412,8 +420,9 @@ class HomeFeedViewController: UIViewController, UITableViewDelegate, UITableView
             self.myTableView.reloadData()
         }, completion: nil)
  */
-        self.myTableView.reloadData()
-        self.myTableView.sectionFooterHeight = 0
+        //self.myTableView.beginUpdates()
+        self.myTableView.reloadRows(at: [indexPath], with: .none)
+        //self.myTableView.endUpdates()
     }
 }
 
