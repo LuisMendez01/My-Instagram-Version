@@ -86,8 +86,10 @@ class HomeFeedViewController: UIViewController, UITableViewDelegate, UITableView
         
         // construct query
         //let query : PFQuery = PFQuery(className: "_User")
+        //var userQuery = new Parse.Query(Parse.User);
         let query = Post.query()
-        query?.order(byAscending: "createAt")
+        query?.order(byDescending: "createdAt")
+        //query?.addDescendingOrder("createdAt")
         //query?.whereKey("likesCount", lessThan: 100)
         //query?.includeKey("author")
         query?.limit = 20
@@ -274,28 +276,7 @@ class HomeFeedViewController: UIViewController, UITableViewDelegate, UITableView
         // Set the avatar
         profileView.image = UIImage(named: "vegeta.png")
         headerView.addSubview(profileView)
-        /*
-         let post = posts[section]
-         let stringDate = post["date"] as? String
-         
-         let dateFormatter = DateFormatter()//dateFormat has to look same as string data coming in
-         dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss zzz"//data extracted looks like this -> 2018-09-03 22:49:17 GMT
-         dateFormatter.locale = Locale(identifier: "en_US_POSIX")
-         dateFormatter.timeZone = TimeZone(abbreviation: "GMT+0:00") //Current time zone
-         dateFormatter.isLenient = true
-         //print(type(of: stringDate))
-         
-         let date = dateFormatter.date(from: stringDate!)
-         //print(date!)
-         
-         //this will make date coming like this 2018-09-03 22:49:17 GMT turn like this //MMM d, yyyy, HH:mm a
-         dateFormatter.dateStyle = .medium
-         dateFormatter.timeStyle = .short
-         
-         // Add a UILabel for the date here
-         // Use the section number to get the right URL
-         // let label = ...
-         */
+        
         let labelUsername = UILabel(frame: CGRect(x: 55, y: 10, width: 250, height: 30))
         labelUsername.textAlignment = .left
         
@@ -344,9 +325,25 @@ class HomeFeedViewController: UIViewController, UITableViewDelegate, UITableView
         
         footerView.addSubview(labelCaption)
         
+        /**************show the Comments count*******************/
+        let labelCommentsCount = UILabel(frame: CGRect(x: 10, y: 40, width: 200, height: 30))
+        labelCommentsCount.textAlignment = .left
+        labelCommentsCount.textColor = #colorLiteral(red: 0.2549019754, green: 0.2745098174, blue: 0.3019607961, alpha: 1)
+        
+        //to worked on
+        if let commentsCount = posts[section]["likesCount"]{
+            let commentsCount = commentsCount
+            
+            print("commentsCount : \(commentsCount)")
+            labelCommentsCount.text = "View all \(commentsCount) comments"
+        }
+        
+        footerView.addSubview(labelCommentsCount)
+        
         /**************show the likes count*******************/
-        let labelLikesCount = UILabel(frame: CGRect(x: 10, y: 40, width: 250, height: 30))
+        let labelLikesCount = UILabel(frame: CGRect(x: self.view.frame.width-60, y: 40, width: 50, height: 30))
         labelLikesCount.textAlignment = .left
+        labelLikesCount.textColor = #colorLiteral(red: 0.2549019754, green: 0.2745098174, blue: 0.3019607961, alpha: 1)
         
         //to worked on
         if let likesCount = posts[section]["likesCount"]{
@@ -358,23 +355,10 @@ class HomeFeedViewController: UIViewController, UITableViewDelegate, UITableView
         
         footerView.addSubview(labelLikesCount)
         
-        /**************show the likes count*******************/
-        let labelCommentsCount = UILabel(frame: CGRect(x: 10, y: 70, width: 250, height: 30))
-        labelCommentsCount.textAlignment = .left
-        
-        //to worked on
-        if let commentsCount = posts[section]["likesCount"]{
-            let commentsCount = commentsCount
-            
-            print("commentsCount : \(commentsCount)")
-            labelCommentsCount.text = "\(commentsCount) comments"
-        }
-        
-        footerView.addSubview(labelCommentsCount)
-        
-        /**************show the likes count*******************/
-        let labelCreatedAt = UILabel(frame: CGRect(x: 10, y: 100, width: 250, height: 30))
+        /**************show the label createdAt*******************/
+        let labelCreatedAt = UILabel(frame: CGRect(x: 10, y: 70, width: 300, height: 30))
         labelCreatedAt.textAlignment = .left
+        labelCreatedAt.textColor = #colorLiteral(red: 0.2549019754, green: 0.2745098174, blue: 0.3019607961, alpha: 1)
         
         //to worked on
         if let createdAt = posts[section].createdAt {
@@ -382,24 +366,24 @@ class HomeFeedViewController: UIViewController, UITableViewDelegate, UITableView
              
             let dateFormatter = DateFormatter()//dateFormat has to look same as string data coming in
             
-            let stringDate = dateFormatter.string(from: createdAt)
+            //let stringDate = dateFormatter.string(from: createdAt)
             
-            dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss zzzz"//data extracted looks like this -> 2018-09-03 22:49:17 GMT
-            dateFormatter.locale = Locale(identifier: "en_US_POSIX")
+            dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"//data extracted looks like this -> 2018-09-30 18:58:05 +0000
+            //dateFormatter.locale = Locale(identifier: "en_US_POSIX")
             dateFormatter.timeZone = TimeZone(abbreviation: "GMT+0:00") //Current time zone
             dateFormatter.isLenient = true
             //print(type(of: stringDate))
              
-            let date = dateFormatter.date(from: stringDate)
+            //let date = dateFormatter.date(from: stringDate)
             //print(date!)
              
-            //this will make date coming like this 2018-09-03 22:49:17 GMT turn like this //MMM d, yyyy, HH:mm a
+            //this will make date coming like this 2018-09-30 18:58:05 +0000 turn like this //yyyy-MM-dd HH:mm:ssZ
             dateFormatter.dateStyle = .medium
             dateFormatter.timeStyle = .short
             
             print("createdAt : \(createdAt)")
-            let timeCreatedAt = dateFormatter.string(from: date ?? Date())
-            labelCreatedAt.text = "\(timeCreatedAt) time ago"
+            let timeCreatedAt = dateFormatter.string(from: createdAt)
+            labelCreatedAt.text = "Posted on \(timeCreatedAt)"
         }
         
         footerView.addSubview(labelCreatedAt)
@@ -414,7 +398,7 @@ class HomeFeedViewController: UIViewController, UITableViewDelegate, UITableView
             return 0
         }
         
-        return 130
+        return 110
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
