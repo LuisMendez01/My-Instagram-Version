@@ -22,6 +22,12 @@ class HomeFeedViewController: UIViewController, UITableViewDelegate, UITableView
     
     //Initialize a UIRefreshControl
     let refreshControl = UIRefreshControl()
+    
+    var isMoreDataLoading = false//to make sure data has already been loaded
+    
+    var loadingMoreView:InfiniteScrollActivityView?
+    
+    var limit: Int = 1
 
     /*******************************************
      * UIVIEW CONTROLLER LIFECYCLES FUNCTIONS *
@@ -41,10 +47,16 @@ class HomeFeedViewController: UIViewController, UITableViewDelegate, UITableView
         /********* Fetch data from Parse-server ********/
         fetchData()
         
+        /********* On refresh call fetch data ********/
         refreshControl.addTarget(self, action: #selector(refreshControlAction(_:)), for: .valueChanged)
         
         // add refresh control to table view
         myTableView.insertSubview(refreshControl, at: 0)
+        
+        /*********Load more infinite scrolling refresh*******/
+        loadingMoreView = InfiniteScrollActivityView()//instantiate the object
+        loadingMoreView!.isHidden = true
+        myTableView.addSubview(loadingMoreView!)
 
         
         print("User is homeFeed: \(String(describing: PFUser.current()))")
@@ -59,6 +71,9 @@ class HomeFeedViewController: UIViewController, UITableViewDelegate, UITableView
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 2) { // change 2 to desired number of seconds
             // Your code with delay
+            
+            //this will just refresh but won't get new posts as it is just pulling from top table
+            self.limit = self.limit-1
             self.fetchData()//get morerecent posts
         }
     }
@@ -97,9 +112,10 @@ class HomeFeedViewController: UIViewController, UITableViewDelegate, UITableView
         query?.order(byDescending: "createdAt")
         //query?.addDescendingOrder("createdAt")
         //query?.whereKey("likesCount", lessThan: 100)
-        //query?.includeKey("author")
-        query?.limit = 20
+        query?.includeKey("author")
+        query?.limit = self.limit
 
+        self.limit = self.limit+1
         // fetch data asynchronously
         query?.findObjectsInBackground(block: { (incomingPosts, error) in
             if let incomingPosts = incomingPosts {
@@ -120,9 +136,17 @@ class HomeFeedViewController: UIViewController, UITableViewDelegate, UITableView
                 //populate this array to false as we need all footers to show to start at
                 self.checked = [Bool](repeating: false, count: self.posts.count+1)
                 
+                DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                    //allow to fetch again once this is false from DidScroll function
+                    self.isMoreDataLoading = false
+                }
+                
                 // Reload the tableView now that there is new data
                 self.myTableView.reloadData()
                 self.refreshControl.endRefreshing()//stop refresh when data has been acquired
+                
+                // Stop the loading indicator
+                self.loadingMoreView!.stopAnimating()
                 
             } else {
                 print(error?.localizedDescription as Any)
@@ -286,19 +310,21 @@ class HomeFeedViewController: UIViewController, UITableViewDelegate, UITableView
         
         let labelUsername = UILabel(frame: CGRect(x: 55, y: 10, width: 250, height: 30))
         labelUsername.textAlignment = .left
-        
-        //to worked on
-        if let author = posts[section]["author"]{
-            let author = (author as! PFObject).objectId!
-            
-            print("author id: \(author)")
+    
+        //unwraps the whole object first
+        if let author = posts[section]["author"] as? PFObject{
+            //then unwraps the key and value
+            if let username = author.value(forKey: "username") {
+                print("Username: \(username)")
+                labelUsername.text = username as? String 
+            }
         }
         
-        //Getting username from user
+        //Getting username from current user for profile VC
         if let author2 = PFUser.current() {
             let author2 = (author2 as PFObject)
             
-            labelUsername.text = author2.value(forKeyPath: "username") as? String
+            //labelUsername.text = author2.value(forKeyPath: "username") as? String
             print("author2 id: \(author2)")
         }
         
@@ -423,6 +449,41 @@ class HomeFeedViewController: UIViewController, UITableViewDelegate, UITableView
         //self.myTableView.beginUpdates()
         self.myTableView.reloadRows(at: [indexPath], with: .none)
         //self.myTableView.endUpdates()
+    }
+    
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        // Handle scroll behavior here
+        if (!isMoreDataLoading) {
+            // Calculate the position of one screen length before the bottom of the results
+            let scrollViewContentHeight = myTableView.contentSize.height//size of content of whole table, all data requested
+            let phoneFrame = myTableView.frame.height//height of the phone
+            let scrollOffsetThreshold = scrollViewContentHeight - phoneFrame//when reached end of
+            
+            // When the user has scrolled past the threshold, start requesting
+            if(scrollView.contentOffset.y > (scrollOffsetThreshold + 60) && myTableView.isTracking) {
+                
+                var insets = myTableView.contentInset
+                insets.bottom += 45//InfiniteScrollActivityView.defaultHeight -> 60
+                myTableView.contentInset = insets
+                
+                print("beginBatchFetch")
+                
+                isMoreDataLoading = true
+                
+                // Update position of loadingMoreView, and start loading indicator
+                //width same as table width, height same as default indicator
+                //position x start from the very most left and y start right after the table end
+                let frame = CGRect(x: 0, y: myTableView.contentSize.height-8, width: myTableView.bounds.size.width, height: InfiniteScrollActivityView.defaultHeight)
+                
+                loadingMoreView?.frame = frame//this is how big indicator will be and positioned
+                loadingMoreView!.startAnimating()
+                
+                DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                    // Code to load more results
+                    self.fetchData()
+                }
+            }
+        }
     }
 }
 
