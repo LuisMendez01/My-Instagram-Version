@@ -62,7 +62,7 @@
                                 <rect key="frame" x="117" y="551" width="180" height="128"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                <color key="textColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="20"/>
                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                             </textView>
@@ -87,7 +87,7 @@
             <objects>
                 <viewController storyboardIdentifier="homeFeedVC" useStoryboardIdentifierAsRestorationIdentifier="YES" id="ISQ-Bc-mlL" customClass="HomeFeedViewController" customModule="My_Instagram_Version" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="yHG-EI-I8R">
-                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="813"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" red="0.75686274509999996" green="0.81176470590000005" blue="0.85490196080000003" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                         <viewLayoutGuide key="safeArea" id="h7J-Vz-B0B"/>
@@ -145,21 +145,87 @@
             </objects>
             <point key="canvasLocation" x="2197" y="761"/>
         </scene>
-        <!--Profile View Controller-->
+        <!--Profile-->
         <scene sceneID="8AW-1U-7Hx">
             <objects>
-                <viewController id="E9g-wf-Egg" customClass="ProfileViewController" customModule="My_Instagram_Version" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="ProfileIDVC" useStoryboardIdentifierAsRestorationIdentifier="YES" id="E9g-wf-Egg" customClass="ProfileViewController" customModule="My_Instagram_Version" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="1vw-8C-QMM">
-                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="813"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="vegeta" translatesAutoresizingMaskIntoConstraints="NO" id="nL7-z8-C0h">
+                                <rect key="frame" x="20" y="132" width="150" height="150"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            </imageView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="username" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Twt-Nb-Sg3">
+                                <rect key="frame" x="40" y="314" width="321" height="21"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="boldSystem" pointSize="21"/>
+                                <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="WeB-4V-csR">
+                                <rect key="frame" x="0.0" y="361" width="414" height="452"/>
+                                <color key="backgroundColor" red="0.61568627450000002" green="0.67450980390000004" blue="0.74901960779999999" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="452" id="vBQ-Xq-AfD"/>
+                                </constraints>
+                                <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="X9h-nt-FPe">
+                                    <size key="itemSize" width="150" height="170"/>
+                                    <size key="headerReferenceSize" width="0.0" height="0.0"/>
+                                    <size key="footerReferenceSize" width="0.0" height="0.0"/>
+                                    <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
+                                </collectionViewFlowLayout>
+                                <cells>
+                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="myCollectionCell" id="2k8-c6-ist" customClass="ProfileImagesCollectionViewCell" customModule="My_Instagram_Version" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="0.0" width="150" height="170"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO">
+                                            <rect key="frame" x="0.0" y="0.0" width="150" height="170"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="X8J-bh-hJ6">
+                                                    <rect key="frame" x="0.0" y="0.0" width="150" height="170"/>
+                                                </imageView>
+                                            </subviews>
+                                        </view>
+                                        <constraints>
+                                            <constraint firstAttribute="bottom" secondItem="X8J-bh-hJ6" secondAttribute="bottom" id="ETp-N1-iUj"/>
+                                            <constraint firstItem="X8J-bh-hJ6" firstAttribute="top" secondItem="2k8-c6-ist" secondAttribute="top" id="TcJ-mI-zNX"/>
+                                            <constraint firstAttribute="trailing" secondItem="X8J-bh-hJ6" secondAttribute="trailing" id="UgQ-ex-bB6"/>
+                                            <constraint firstItem="X8J-bh-hJ6" firstAttribute="leading" secondItem="2k8-c6-ist" secondAttribute="leading" id="yRe-Kd-sKN"/>
+                                        </constraints>
+                                        <connections>
+                                            <outlet property="myPostedPhotos" destination="X8J-bh-hJ6" id="2yJ-52-eqa"/>
+                                        </connections>
+                                    </collectionViewCell>
+                                </cells>
+                            </collectionView>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="7sp-B5-A5r">
+                                <rect key="frame" x="211" y="252" width="150" height="30"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <state key="normal" title="SETTINGS"/>
+                            </button>
+                        </subviews>
                         <color key="backgroundColor" red="0.61568627450980395" green="0.67450980392156867" blue="0.74901960784313726" alpha="1" colorSpace="calibratedRGB"/>
+                        <constraints>
+                            <constraint firstItem="WeB-4V-csR" firstAttribute="leading" secondItem="1W3-oc-yp8" secondAttribute="leading" id="LDi-Fe-M9D"/>
+                            <constraint firstItem="WeB-4V-csR" firstAttribute="trailing" secondItem="1W3-oc-yp8" secondAttribute="trailing" id="auu-Gl-Xlz"/>
+                            <constraint firstItem="WeB-4V-csR" firstAttribute="bottom" secondItem="1W3-oc-yp8" secondAttribute="bottom" id="uxH-rH-8mK"/>
+                        </constraints>
                         <viewLayoutGuide key="safeArea" id="1W3-oc-yp8"/>
                     </view>
-                    <navigationItem key="navigationItem" id="cjz-vX-8lQ"/>
+                    <navigationItem key="navigationItem" title="Profile" id="cjz-vX-8lQ"/>
+                    <connections>
+                        <outlet property="collectionView" destination="WeB-4V-csR" id="vaJ-zS-SVR"/>
+                        <outlet property="profileImage" destination="nL7-z8-C0h" id="QkM-Ax-xmv"/>
+                        <outlet property="usernameLabel" destination="Twt-Nb-Sg3" id="Gdg-cD-t7t"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="2mm-6d-My5" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2348" y="27"/>
+            <point key="canvasLocation" x="2347.826086956522" y="26.785714285714285"/>
         </scene>
         <!--Home-->
         <scene sceneID="AQA-Yz-9Cy">
@@ -201,11 +267,13 @@
         <!--Tab Bar Controller-->
         <scene sceneID="oZt-X1-I5T">
             <objects>
-                <tabBarController automaticallyAdjustsScrollViewInsets="NO" id="kbe-T1-gax" sceneMemberID="viewController">
+                <tabBarController storyboardIdentifier="theTabBarController" automaticallyAdjustsScrollViewInsets="NO" useStoryboardIdentifierAsRestorationIdentifier="YES" id="kbe-T1-gax" sceneMemberID="viewController">
                     <toolbarItems/>
-                    <tabBar key="tabBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="eK8-Kb-Wzo">
+                    <tabBar key="tabBar" opaque="NO" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" translucent="NO" id="eK8-Kb-Wzo">
+                        <rect key="frame" x="0.0" y="0.0" width="1000" height="1000"/>
                         <autoresizingMask key="autoresizingMask"/>
-                        <color key="backgroundColor" red="0.82745098039999998" green="0.87843137250000003" blue="0.89019607840000003" alpha="0.92000000000000004" colorSpace="custom" customColorSpace="displayP3"/>
+                        <color key="backgroundColor" red="0.61568627450000002" green="0.67450980390000004" blue="0.74901960779999999" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                        <color key="selectedImageTintColor" red="0.61568627450980395" green="0.67450980392156867" blue="0.74901960784313726" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                     </tabBar>
                     <connections>
                         <segue destination="RoH-FI-l7F" kind="relationship" relationship="viewControllers" id="Frv-ud-jEi"/>
@@ -241,5 +309,6 @@
         <image name="image_placeholder" width="375" height="375"/>
         <image name="instaTitle" width="704" height="199"/>
         <image name="profile_tab" width="25" height="25"/>
+        <image name="vegeta" width="1080" height="1080"/>
     </resources>
 </document>

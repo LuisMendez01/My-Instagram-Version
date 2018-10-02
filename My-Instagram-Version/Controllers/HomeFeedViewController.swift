@@ -27,7 +27,7 @@ class HomeFeedViewController: UIViewController, UITableViewDelegate, UITableView
     
     var loadingMoreView:InfiniteScrollActivityView?
     
-    var limit: Int = 1
+    var limit: Int = 5
 
     /*******************************************
      * UIVIEW CONTROLLER LIFECYCLES FUNCTIONS *
@@ -73,7 +73,7 @@ class HomeFeedViewController: UIViewController, UITableViewDelegate, UITableView
             // Your code with delay
             
             //this will just refresh but won't get new posts as it is just pulling from top table
-            self.limit = self.limit-1
+            self.limit = self.limit-5
             self.fetchData()//get morerecent posts
         }
     }
@@ -115,7 +115,7 @@ class HomeFeedViewController: UIViewController, UITableViewDelegate, UITableView
         query?.includeKey("author")
         query?.limit = self.limit
 
-        self.limit = self.limit+1
+        self.limit = self.limit+5
         // fetch data asynchronously
         query?.findObjectsInBackground(block: { (incomingPosts, error) in
             if let incomingPosts = incomingPosts {
@@ -267,7 +267,7 @@ class HomeFeedViewController: UIViewController, UITableViewDelegate, UITableView
         print("section #: \(indexPath.section)")
         PFPhotoView.load(inBackground: {(imagen, error) in
                 cell.myImagePost.image = imagen
-            //cell.stateLabel.text = cityState.last
+            
         })
         
         //cell.textLabel!.text = "Que!"//"\(posts[indexPath.row])"
@@ -320,15 +320,6 @@ class HomeFeedViewController: UIViewController, UITableViewDelegate, UITableView
             }
         }
         
-        //Getting username from current user for profile VC
-        if let author2 = PFUser.current() {
-            let author2 = (author2 as PFObject)
-            
-            //labelUsername.text = author2.value(forKeyPath: "username") as? String
-            print("author2 id: \(author2)")
-        }
-        
-        //dateFormatter.string(from: date ?? Date())
         headerView.addSubview(labelUsername)
         
         return headerView
@@ -402,8 +393,8 @@ class HomeFeedViewController: UIViewController, UITableViewDelegate, UITableView
             //let stringDate = dateFormatter.string(from: createdAt)
             
             dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"//data extracted looks like this -> 2018-09-30 18:58:05 +0000
-            //dateFormatter.locale = Locale(identifier: "en_US_POSIX")
-            dateFormatter.timeZone = TimeZone(abbreviation: "GMT+0:00") //Current time zone
+            dateFormatter.locale = Locale(identifier: "en_US_POSIX")
+            //dateFormatter.timeZone = TimeZone(abbreviation: "GMT+0:00") //Current time zone
             dateFormatter.isLenient = true
             //print(type(of: stringDate))
              

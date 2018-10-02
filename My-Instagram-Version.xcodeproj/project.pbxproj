@@ -15,6 +15,7 @@
 		0512098421606C15008DA4C3 /* Post.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0512098321606C15008DA4C3 /* Post.swift */; };
 		051209862162D236008DA4C3 /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 051209852162D236008DA4C3 /* ProfileViewController.swift */; };
 		051209882162DABE008DA4C3 /* InfiniteScrollActivityView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 051209872162DABE008DA4C3 /* InfiniteScrollActivityView.swift */; };
+		0512098C21630F76008DA4C3 /* ProfileImagesCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0512098B21630F76008DA4C3 /* ProfileImagesCollectionViewCell.swift */; };
 		4CE00044AA0AD6E24AA8A1E8 /* Pods_My_Instagram_Version.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F6A8236674225033A343977D /* Pods_My_Instagram_Version.framework */; };
 		F71F5032215ED77E00528A95 /* HomeFeedViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F71F5031215ED77E00528A95 /* HomeFeedViewController.swift */; };
 		F71F5034215FED5B00528A95 /* ComposeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F71F5033215FED5B00528A95 /* ComposeViewController.swift */; };
@@ -32,6 +33,7 @@
 		0512098321606C15008DA4C3 /* Post.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Post.swift; sourceTree = "<group>"; };
 		051209852162D236008DA4C3 /* ProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
 		051209872162DABE008DA4C3 /* InfiniteScrollActivityView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfiniteScrollActivityView.swift; sourceTree = "<group>"; };
+		0512098B21630F76008DA4C3 /* ProfileImagesCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileImagesCollectionViewCell.swift; sourceTree = "<group>"; };
 		72C3C0795CFAA21CDE48E55D /* Pods-My-Instagram-Version.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-My-Instagram-Version.debug.xcconfig"; path = "Pods/Target Support Files/Pods-My-Instagram-Version/Pods-My-Instagram-Version.debug.xcconfig"; sourceTree = "<group>"; };
 		F6A8236674225033A343977D /* Pods_My_Instagram_Version.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_My_Instagram_Version.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		F71F5031215ED77E00528A95 /* HomeFeedViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeFeedViewController.swift; sourceTree = "<group>"; };
@@ -126,6 +128,7 @@
 			children = (
 				F71F503621618DBC00528A95 /* PostTableViewCell.swift */,
 				051209872162DABE008DA4C3 /* InfiniteScrollActivityView.swift */,
+				0512098B21630F76008DA4C3 /* ProfileImagesCollectionViewCell.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -209,6 +212,7 @@
 			inputPaths = (
 				"${SRCROOT}/Pods/Target Support Files/Pods-My-Instagram-Version/Pods-My-Instagram-Version-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/Bolts/Bolts.framework",
+				"${BUILT_PRODUCTS_DIR}/MBProgressHUD/MBProgressHUD.framework",
 				"${BUILT_PRODUCTS_DIR}/Parse/Parse.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
@@ -216,6 +220,7 @@
 			);
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Bolts.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/MBProgressHUD.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Parse.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -259,6 +264,7 @@
 				F71F5034215FED5B00528A95 /* ComposeViewController.swift in Sources */,
 				051209862162D236008DA4C3 /* ProfileViewController.swift in Sources */,
 				0512098421606C15008DA4C3 /* Post.swift in Sources */,
+				0512098C21630F76008DA4C3 /* ProfileImagesCollectionViewCell.swift in Sources */,
 				F71F503721618DBC00528A95 /* PostTableViewCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

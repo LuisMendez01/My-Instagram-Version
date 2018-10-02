@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import MBProgressHUD
 
 class ComposeViewController: UIViewController, UINavigationControllerDelegate, UIImagePickerControllerDelegate {
 
@@ -103,9 +104,22 @@ class ComposeViewController: UIViewController, UINavigationControllerDelegate, U
     
     @objc func shareBtn(){
         
+        // Display HUD right before the request is made
+        MBProgressHUD.showAdded(to: self.view, animated: true)
+        
+        //Making network posting image to Parse-Server
         Post.postUserImage(image: imageToPost.image, withCaption: captionField.text, withCompletion: nil)
         
-        dismiss(animated: true, completion: nil)
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2) { // change 2 to desired number of seconds
+            // Your code with delay
+            
+            // Hide HUD once the network request comes back (must be done on main UI thread)
+            MBProgressHUD.hide(for: self.view, animated: true)
+            
+            //dismiss controller
+            self.dismiss(animated: true, completion: nil)
+        }
     }
     
     @objc func setImagePicker(){

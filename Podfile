@@ -8,6 +8,7 @@ target 'My-Instagram-Version' do
   # Pods for My-Instagram-Version
     pod 'Parse'
     pod 'Parse/UI'
+    pod 'MBProgressHUD'
         
 
 end

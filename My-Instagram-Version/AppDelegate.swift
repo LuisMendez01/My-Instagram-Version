@@ -42,14 +42,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             
             let storyboard = UIStoryboard(name: "Main", bundle: nil)
             // view controller currently being set in Storyboard as default will be overridden
-            let HomeFeedVC = storyboard.instantiateViewController(withIdentifier: "homeFeedVC") as! HomeFeedViewController
+            let HomeFeedVC = storyboard.instantiateViewController(withIdentifier: "ProfileIDVC") as! ProfileViewController
             //Only using this shows a white screen but below code makes it work, guess it's
             //the fact that this HomeFeedVC has a NavBar Controller
                 //self.window?.rootViewController = HomeFeedVC
             
             //do this if you want a NavBarController on top of VC
-                let navigationController = UINavigationController(rootViewController: HomeFeedVC)
-                window!.rootViewController = navigationController
+            let navigationController = UINavigationController(rootViewController: HomeFeedVC)
+            window!.rootViewController = navigationController
  
         }
         
