@@ -20,6 +20,12 @@ class HomeFeedViewController: UIViewController, UITableViewDelegate, UITableView
     //set image from Parse-Server
     let PFPhotoView = PFImageView()
     
+    //these two image view will work together for heart likes
+    let ON_OFF_HeartView = UIImageView()
+    let heartView = UIImageView(frame: CGRect(x: 10, y: 10, width: 30, height: 30))
+    
+    var selectedSectionIndexTracker = -1
+    
     //Initialize a UIRefreshControl
     let refreshControl = UIRefreshControl()
     
@@ -57,6 +63,16 @@ class HomeFeedViewController: UIViewController, UITableViewDelegate, UITableView
         loadingMoreView = InfiniteScrollActivityView()//instantiate the object
         loadingMoreView!.isHidden = true
         myTableView.addSubview(loadingMoreView!)
+        
+        /********* calling to see if image was liked or not and set it ********/
+        isPostLiked()
+        
+        //********** For image profile to be used ********//
+        let imageTap =  UITapGestureRecognizer(target: self, action: #selector(isPostLiked))
+        
+        //to be able to use it by just tapping on image
+        heartView.isUserInteractionEnabled = true
+        heartView.addGestureRecognizer(imageTap)
 
         
         print("User is homeFeed: \(String(describing: PFUser.current()))")
@@ -66,6 +82,27 @@ class HomeFeedViewController: UIViewController, UITableViewDelegate, UITableView
     /************************
      * MY CREATED FUNCTIONS *
      ************************/
+    @objc func isPostLiked(){
+        print("ppppppp iaPoarLikws")
+        var count = 0
+        if !isHeartLIked {
+            ON_OFF_HeartView.image = UIImage(named: "heart1.png")
+            posts[selectedSectionIndexTracker]["isHeartLIked"] = true
+            count = 1
+        } else {
+            ON_OFF_HeartView.image = UIImage(named: "heart2.png")
+            posts[selectedSectionIndexTracker]["isHeartLIked"] = false
+            count = -1
+        }
+        
+        if selectedSectionIndexTracker != -1 {
+            if let likesCount = posts[selectedSectionIndexTracker]["likesCount"]{
+                let likesCount = (likesCount as? Int)! + count
+                posts[selectedSectionIndexTracker]["likesCount"] = likesCount
+                print("pppppppp\(likesCount)")
+            }
+        }
+    }
     
     @objc func refreshControlAction(_ refreshControl: UIRefreshControl){
         
@@ -335,8 +372,16 @@ class HomeFeedViewController: UIViewController, UITableViewDelegate, UITableView
         //headerView.backgroundColor = UIColor(white: 1, alpha: 0.9)
         footerView.backgroundColor = #colorLiteral(red: 0.8153101802, green: 0.8805506825, blue: 0.8921775818, alpha: 0.92)
         
+        /**************set heart like*******************/
+        //this is instatiated at the beginning for the gesture recognizer
+        //let heartView = UIImageView(frame: CGRect(x: 10, y: 10, width: 30, height: 30))
+        
+        // Set heart icon image
+        heartView.image = ON_OFF_HeartView.image
+        footerView.addSubview(heartView)
+        
         /**************show the captions*******************/
-        let labelCaption = UILabel(frame: CGRect(x: 10, y: 10, width: 250, height: 30))
+        let labelCaption = UILabel(frame: CGRect(x: 10, y: 40, width: 250, height: 30))
         labelCaption.textAlignment = .left
         
         //to worked on
@@ -350,12 +395,12 @@ class HomeFeedViewController: UIViewController, UITableViewDelegate, UITableView
         footerView.addSubview(labelCaption)
         
         /**************show the Comments count*******************/
-        let labelCommentsCount = UILabel(frame: CGRect(x: 10, y: 40, width: 200, height: 30))
+        let labelCommentsCount = UILabel(frame: CGRect(x: 10, y: 70, width: 200, height: 30))
         labelCommentsCount.textAlignment = .left
         labelCommentsCount.textColor = #colorLiteral(red: 0.2549019754, green: 0.2745098174, blue: 0.3019607961, alpha: 1)
         
         //to worked on
-        if let commentsCount = posts[section]["likesCount"]{
+        if let commentsCount = posts[section]["commentsCount"]{
             let commentsCount = commentsCount
             
             print("commentsCount : \(commentsCount)")
@@ -365,7 +410,7 @@ class HomeFeedViewController: UIViewController, UITableViewDelegate, UITableView
         footerView.addSubview(labelCommentsCount)
         
         /**************show the likes count*******************/
-        let labelLikesCount = UILabel(frame: CGRect(x: self.view.frame.width-60, y: 40, width: 50, height: 30))
+        let labelLikesCount = UILabel(frame: CGRect(x: self.view.frame.width-60, y: 70, width: 50, height: 30))
         labelLikesCount.textAlignment = .left
         labelLikesCount.textColor = #colorLiteral(red: 0.2549019754, green: 0.2745098174, blue: 0.3019607961, alpha: 1)
         
@@ -380,7 +425,7 @@ class HomeFeedViewController: UIViewController, UITableViewDelegate, UITableView
         footerView.addSubview(labelLikesCount)
         
         /**************show the label createdAt*******************/
-        let labelCreatedAt = UILabel(frame: CGRect(x: 10, y: 70, width: 300, height: 30))
+        let labelCreatedAt = UILabel(frame: CGRect(x: 10, y: 100, width: 300, height: 30))
         labelCreatedAt.textAlignment = .left
         labelCreatedAt.textColor = #colorLiteral(red: 0.2549019754, green: 0.2745098174, blue: 0.3019607961, alpha: 1)
         
@@ -391,8 +436,8 @@ class HomeFeedViewController: UIViewController, UITableViewDelegate, UITableView
             let dateFormatter = DateFormatter()//dateFormat has to look same as string data coming in
             
             //let stringDate = dateFormatter.string(from: createdAt)
-            
-            dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"//data extracted looks like this -> 2018-09-30 18:58:05 +0000
+            //2018-10-02T07:22:38.328Z
+            dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ssZ"//data extracted looks like this -> 2018-09-30 18:58:05 +0000
             dateFormatter.locale = Locale(identifier: "en_US_POSIX")
             //dateFormatter.timeZone = TimeZone(abbreviation: "GMT+0:00") //Current time zone
             dateFormatter.isLenient = true
@@ -422,21 +467,19 @@ class HomeFeedViewController: UIViewController, UITableViewDelegate, UITableView
             return 0
         }
         
-        return 110
+        return 140
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         print("Num: \(indexPath.section)")
         print("Value: \(posts[indexPath.section])")
         
+        //what section was selected
+        selectedSectionIndexTracker = indexPath.section
+        
         //change value of checked section to hide/show
         checked[indexPath.section] = !checked[indexPath.section]
-        /*
-        UIView.animate(withDuration: 0.5, delay: 0.3, options: [.repeat, .curveEaseOut, .autoreverse], animations: {
-            
-            self.myTableView.reloadData()
-        }, completion: nil)
- */
+   
         //self.myTableView.beginUpdates()
         self.myTableView.reloadRows(at: [indexPath], with: .none)
         //self.myTableView.endUpdates()

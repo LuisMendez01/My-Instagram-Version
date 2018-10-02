@@ -8,15 +8,17 @@
 
 import UIKit
 import Parse
+import MBProgressHUD
 
-class ProfileViewController: UIViewController, UICollectionViewDataSource {
+class ProfileViewController: UIViewController, UICollectionViewDataSource, UINavigationControllerDelegate, UIImagePickerControllerDelegate {
 
     @IBOutlet weak var profileImage: UIImageView!
     @IBOutlet weak var usernameLabel: UILabel!
     @IBOutlet weak var collectionView: UICollectionView!
+    @IBOutlet weak var postCountLabel: UILabel!
     
     var posts: [PFObject] = []
-    let PFPhotoView = PFImageView()//set image from Parse-Server
+    let PFPhotoView = PFImageView()//set image from Parse-Server to collectionView
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -36,6 +38,13 @@ class ProfileViewController: UIViewController, UICollectionViewDataSource {
         profileImage.layer.cornerRadius = profileImage.frame.width / 2;
         profileImage.layer.borderColor = UIColor(white: 0.7, alpha: 0.8).cgColor
         profileImage.layer.borderWidth = 1;
+        
+        //********** For image profile to be used ********//
+        let imageTap =  UITapGestureRecognizer(target: self, action: #selector(callSetImagePicker))
+        
+        //to be able to use it by just tapping on image
+        profileImage.isUserInteractionEnabled = true
+        profileImage.addGestureRecognizer(imageTap)
     }
     
     /*******************
@@ -71,70 +80,206 @@ class ProfileViewController: UIViewController, UICollectionViewDataSource {
         let post = Post()
         //Get the current user and assign it to "author" field. "author" field is now of Pointer type
         post.author = PFUser.current()!
+      
+        print("post.author.username: \(String(describing: post.author.username))")
         
-        
-                let query = Post.query()
-                query?.order(byDescending: "createdAt")
-                //query?.addDescendingOrder("createdAt")
-                //query?.whereKey("objectId", equalTo: userID)
-                query?.includeKey("author")
-                query?.whereKey("username", equalTo: "DVtYsCBnAL")
-                query?.limit = 20
+        let query = Post.query()
+        query?.order(byDescending: "createdAt")
+        query?.whereKey("author", equalTo: post.author)
+        query?.limit = 20
                 
-                // fetch data asynchronously
-                query?.findObjectsInBackground(block: { (incomingPosts, error) in
-                    if let incomingPosts = incomingPosts {
+        // fetch data asynchronously
+        query?.findObjectsInBackground(block: { (incomingPosts, error) in
+                if let incomingPosts = incomingPosts {
                         
-                        //                for post in incomingPosts {
-                        //                    // access the object as a dictionary and cast type
-                        ////                    let likeCount = post.dictionaryWithValues(forKeys: ["caption"])
-                        ////                    print(likeCount["caption"]!)
-                        //
-                        //                    let caption = post["caption"]
-                        //                    print(caption ?? "")
-                        //                }
+                    for post in incomingPosts {
+                        let post = post
+                        print("post: \(post)")
+                    }
                         
-                        // do something with the array of object returned by the call
-                        self.posts = incomingPosts
-                        print("incoming posts")
-                        print(incomingPosts)
+                // do something with the array of object returned by the call
+                self.posts = incomingPosts
+                print("incoming posts")
+                print(incomingPosts)
+                    
+                // 1. unwrap username value to be used
+                if let username = post.author.username {
+                    print("Username: \(username)")
+                    self.usernameLabel.text = username
+                    
+                    /*********** Set Title of Bar Controller to username **************/
+                    let titleLabel = UILabel()//for the title of the page
+                    
+                    //set some attributes for the title of this controller
+                    let strokeTextAttributes: [NSAttributedString.Key: Any] = [
+                        .strokeColor : UIColor.white,
+                        .foregroundColor : UIColor(cgColor: #colorLiteral(red: 0.1019607857, green: 0.2784313858, blue: 0.400000006, alpha: 1)),  /*UIColor(red: 0.5, green: 0.25, blue: 0.15, alpha: 0.8)*/
+                        .strokeWidth : -1,
+                        .font : UIFont.boldSystemFont(ofSize: 17)
+                    ]
+                    
+                    //set the name and put in the attributes for it
+                    let titleText = NSAttributedString(string: username, attributes: strokeTextAttributes)
+                    titleLabel.attributedText = titleText
+                    titleLabel.sizeToFit()
+                    self.navigationItem.titleView = titleLabel
+                }
+                    
+                // 2. Get post # How many posts have user posted
+                self.postCountLabel.text = "\(self.posts.count)"
+                    
+                // 3. get Image
+                if let profile_Image = post.author["image"] {
+                    self.PFPhotoView.file = profile_Image as? PFFile
+                    print("imagen file xxx: \(String(describing: self.PFPhotoView.file))")
                         
-                        //unwraps the whole object first
-                        if let author = self.posts[0]["author"] as? PFObject{
-                            //then unwraps the key and value
-                            if let username = author.value(forKey: "username") {
-                                print("Username: \(username)")
-                                self.usernameLabel.text = username as? String
-                            }
-                        }
+                    self.PFPhotoView.load(inBackground: {(imagen, error) in
+                        self.profileImage.image = imagen
+                    })
+                }
+                
+                    if let userPicture = PFUser.current()?["image"] as? PFFile {
                         
+                        self.PFPhotoView.file = userPicture
+                        print("imagen file xxxuuu: \(String(describing: self.PFPhotoView.file))")
                         
-                        //reload collection after all movies are input in movies array
-                        self.collectionView.reloadData()
+                        self.PFPhotoView.load(inBackground: {(imagen, error) in
+                            print("pngDATA: \(String(describing: imagen)))")
+                            self.profileImage.image = UIImage(data: (imagen?.pngData()!)!)
+                        })
+                    }
+                    /*
+                var instagramPost: PFObject! {
+                    didSet {
+                        self.PFPhotoView.file = instagramPost["media"] as? PFFile
+                        self.PFPhotoView.load(inBackground: {(imagen, error) in
+                            self.profileImage.image = imagen
+                        })
+                    }
+                }
+                
+                self.PFPhotoView.file = (post.author["profile_Image"] as! PFFile)
+                print("imagen file xxx: \(String(describing: self.PFPhotoView.file))")
+                    
+                    self.PFPhotoView.load(inBackground: {(imagen, error) in
+                    self.profileImage.image = imagen
                         
-                    } else {
+                })
+*/
+                
+                //reload collection after all movies are input in movies array
+                self.collectionView.reloadData()
+                        
+                } else {
                         print(error?.localizedDescription as Any)
                     }
-                })
-                
-                //        // construct query
-                //        let predicate = NSPredicate(format: "likesCount > 100")
-                //        var query = Post.query(with: predicate)
-                //
-                //        // fetch data asynchronously
-                //        query!.findObjectsInBackground(block: { (incomingPosts, error) in
-                //            if let posts = incomingPosts {
-                //                // do something with the array of object returned by the call
-                //                for post in posts {
-                //                    // access the object as a dictionary and cast type
-                //                    let likeCount = post.likesCount
-                //                }
-                //            } else {
-                //                print(error?.localizedDescription as Any)
-                //            }
-                //        })
-           
+            })
     }
+    
+    private func resize(image: UIImage, newSize: CGSize) -> UIImage {
+        
+        let resizeImageView = UIImageView(frame: CGRect(x:0, y:0, width: newSize.width, height: newSize.height))
+        resizeImageView.contentMode = UIView.ContentMode.scaleAspectFill
+        resizeImageView.image = image
+        
+        UIGraphicsBeginImageContext(resizeImageView.frame.size)
+        resizeImageView.layer.render(in: UIGraphicsGetCurrentContext()!)
+        let newImage = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        return newImage!
+    }
+    
+    @objc func callSetImagePicker(){
+    
+        setImagePicker(){ success in
+        
+            // Display HUD right before the request is made
+            MBProgressHUD.showAdded(to: self.view, animated: true)
+            
+            let post = Post()
+            //Get the current user and assign it to "author" field. "author" field is now of Pointer type
+            post.author = PFUser.current()!
+            
+            //Making network posting image to Parse-Server
+            self.updateCurrentUserProfilePicture(image: self.profileImage.image!)
+            
+            
+            DispatchQueue.main.asyncAfter(deadline: .now() + 2) { // change 2 to desired number of seconds
+            // Your code with delay
+            
+                // Hide HUD once the network request comes back (must be done on main UI thread)
+                MBProgressHUD.hide(for: self.view, animated: true)
+            }
+        }
+    }
+    
+    func updateCurrentUserProfilePicture(image: UIImage) {
+        let avatar = PFFile(name: PFUser.current()!.username, data: image.pngData()!)
+        PFUser.current()!.setObject(avatar!, forKey: "image")
+        PFUser.current()!.saveInBackground(block: {(success: Bool, error: Error?) -> Void in
+            
+        })
+    }
+    
+    func setImagePicker(completion: @escaping ((_ success: Bool)->())){
+        
+        let PickerVC = UIImagePickerController()
+        PickerVC.delegate = self
+        PickerVC.allowsEditing = false
+        
+        if UIImagePickerController.isSourceTypeAvailable(.camera) {
+            print("Camera is available 📸")
+            PickerVC.sourceType = .camera
+            completion(true)
+        } else {
+            print("Camera 🚫 available so we will use photo library instead")
+            //image will be dragged from photoLibrary
+            PickerVC.sourceType = .photoLibrary
+            completion(true)
+        }
+        
+        self.present(PickerVC, animated: true, completion: nil)
+    }
+    
+    /****************************
+     * PICKERDELEGATE FUNCTIONS *
+     ****************************/
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        
+        // Get the image captured by the UIImagePickerController
+        //Set image as UIImage if all good then set it to our image variable
+        if let editedImage = info[.editedImage] as? UIImage {
+            print("editedImage was taken")
+            //set the image size in terms of width and height, will be equal to almost 5MB, what I want
+            let size = CGSize(width: 1000, height: 1000)
+            
+            //resize image to be less than 1MB
+            let imageEdited = resize(image: editedImage, newSize: size)
+            profileImage.image = imageEdited
+            
+        } else if let image = info[.originalImage] as? UIImage {
+            print("Original Image was taken")
+            
+            //set the image size in terms of width and height, will be equal to almost 1MB, what I want
+            let size = CGSize(width: 1000, height: 1000)
+            
+            //resize image to be less than 1MB
+            let img = resize(image: image, newSize: size)
+            
+            //put it in the image view
+            profileImage.image = img
+            
+        } else {
+            //Error Message
+            print("There was an error uploading image to VC")
+        }
+        
+        // Do something with the images (based on your use case)
+        
+        // Dismiss UIImagePickerController to go back to your original view controller
+        dismiss(animated: true, completion: nil)
+    }
+
     
     /****************************
      * CollectionView functions *
@@ -158,3 +303,22 @@ class ProfileViewController: UIViewController, UICollectionViewDataSource {
     }
 
 }
+
+
+
+//        // construct query with predicates
+//        let predicate = NSPredicate(format: "likesCount > 100")
+//        var query = Post.query(with: predicate)
+//
+//        // fetch data asynchronously
+//        query!.findObjectsInBackground(block: { (incomingPosts, error) in
+//            if let posts = incomingPosts {
+//                // do something with the array of object returned by the call
+//                for post in posts {
+//                    // access the object as a dictionary and cast type
+//                    let likeCount = post.likesCount
+//                }
+//            } else {
+//                print(error?.localizedDescription as Any)
+//            }
+//        })

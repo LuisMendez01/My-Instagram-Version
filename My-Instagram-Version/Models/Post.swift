@@ -16,6 +16,7 @@ class Post: PFObject, PFSubclassing {
     @NSManaged var caption: String
     @NSManaged var likesCount: Int
     @NSManaged var commentsCount: Int
+    @NSManaged var isHeartLIked: Bool
     
     /* Needed to implement PFSubclassing interface */
     class func parseClassName() -> String {
@@ -42,6 +43,7 @@ class Post: PFObject, PFSubclassing {
         post.author = PFUser.current()! // Pointer column type that points to PFUser
         post.caption = caption ?? ""
         post.likesCount = 0
+        post.isHeartLIked = false
         post.commentsCount = 0
         
         // Save object (following function will save the object in Parse asynchronously)
