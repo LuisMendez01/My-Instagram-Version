@@ -83,7 +83,7 @@ class HomeFeedViewController: UIViewController, UITableViewDelegate, UITableView
      * MY CREATED FUNCTIONS *
      ************************/
     @objc func isPostLiked(){
-        print("ppppppp iaPoarLikws")
+        print("ppppppp iaPoarLikws")/*
         var count = 0
         if !isHeartLIked {
             ON_OFF_HeartView.image = UIImage(named: "heart1.png")
@@ -101,7 +101,7 @@ class HomeFeedViewController: UIViewController, UITableViewDelegate, UITableView
                 posts[selectedSectionIndexTracker]["likesCount"] = likesCount
                 print("pppppppp\(likesCount)")
             }
-        }
+        }*/
     }
     
     @objc func refreshControlAction(_ refreshControl: UIRefreshControl){

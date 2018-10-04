@@ -17,36 +17,40 @@
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Insta" translatesAutoresizingMaskIntoConstraints="NO" id="0b5-eV-NLD">
-                                <rect key="frame" x="157" y="398" width="100" height="100"/>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="instaLaunch" translatesAutoresizingMaskIntoConstraints="NO" id="0b5-eV-NLD">
+                                <rect key="frame" x="142" y="383" width="130" height="130"/>
                                 <constraints>
-                                    <constraint firstAttribute="width" constant="100" id="cu3-PH-trH"/>
-                                    <constraint firstAttribute="height" constant="100" id="waz-IK-HLv"/>
+                                    <constraint firstAttribute="height" constant="130" id="DTm-7m-xBt"/>
+                                    <constraint firstAttribute="width" constant="130" id="Lvl-To-oMx"/>
                                 </constraints>
                             </imageView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="My Instagram App" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Un3-Nc-37k">
-                                <rect key="frame" x="115.5" y="344" width="183" height="27"/>
-                                <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="22"/>
-                                <color key="textColor" red="0.72056749131944442" green="0.29503038194444442" blue="0.62177191840277779" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <rect key="frame" x="100.5" y="331" width="213" height="30"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="213" id="YUN-tL-pwH"/>
+                                    <constraint firstAttribute="height" constant="30" id="tmJ-Px-VYD"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="boldSystem" pointSize="25"/>
+                                <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <nil key="highlightedColor"/>
                             </label>
                         </subviews>
-                        <color key="backgroundColor" red="0.20000000000000001" green="0.20000000000000001" blue="0.40000000000000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <color key="backgroundColor" red="0.61568627450000002" green="0.67450980390000004" blue="0.74901960779999999" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                         <constraints>
-                            <constraint firstItem="0b5-eV-NLD" firstAttribute="centerY" secondItem="Ze5-6b-2t3" secondAttribute="centerY" id="5lr-gl-yGu"/>
-                            <constraint firstItem="0b5-eV-NLD" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="Myh-ZE-yI3"/>
-                            <constraint firstItem="Un3-Nc-37k" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="evK-ZI-seD"/>
-                            <constraint firstItem="0b5-eV-NLD" firstAttribute="top" secondItem="Un3-Nc-37k" secondAttribute="bottom" constant="27" id="m1P-8E-lJU"/>
+                            <constraint firstItem="0b5-eV-NLD" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="Y19-LJ-J8w"/>
+                            <constraint firstItem="Un3-Nc-37k" firstAttribute="centerX" secondItem="0b5-eV-NLD" secondAttribute="centerX" id="YVG-Dz-sNa"/>
+                            <constraint firstItem="0b5-eV-NLD" firstAttribute="centerY" secondItem="Ze5-6b-2t3" secondAttribute="centerY" id="h9l-2l-fbn"/>
+                            <constraint firstItem="0b5-eV-NLD" firstAttribute="top" secondItem="Un3-Nc-37k" secondAttribute="bottom" constant="22" id="hl3-7C-y3B"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="iYj-Kq-Ea1" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="53" y="375"/>
+            <point key="canvasLocation" x="52.173913043478265" y="375"/>
         </scene>
     </scenes>
     <resources>
-        <image name="Insta" width="1455" height="1454"/>
+        <image name="instaLaunch" width="512" height="512"/>
     </resources>
 </document>

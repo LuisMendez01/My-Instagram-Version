@@ -12,7 +12,7 @@ import MBProgressHUD
 
 class ProfileViewController: UIViewController, UICollectionViewDataSource, UINavigationControllerDelegate, UIImagePickerControllerDelegate {
 
-    @IBOutlet weak var profileImage: UIImageView!
+    @IBOutlet weak var profileImage: PFImageView!
     @IBOutlet weak var usernameLabel: UILabel!
     @IBOutlet weak var collectionView: UICollectionView!
     @IBOutlet weak var postCountLabel: UILabel!
@@ -40,7 +40,7 @@ class ProfileViewController: UIViewController, UICollectionViewDataSource, UINav
         profileImage.layer.borderWidth = 1;
         
         //********** For image profile to be used ********//
-        let imageTap =  UITapGestureRecognizer(target: self, action: #selector(callSetImagePicker))
+        let imageTap =  UITapGestureRecognizer(target: self, action: #selector(setImagePicker))
         
         //to be able to use it by just tapping on image
         profileImage.isUserInteractionEnabled = true
@@ -84,9 +84,10 @@ class ProfileViewController: UIViewController, UICollectionViewDataSource, UINav
         print("post.author.username: \(String(describing: post.author.username))")
         
         let query = Post.query()
+        query?.cachePolicy = .cacheElseNetwork
         query?.order(byDescending: "createdAt")
         query?.whereKey("author", equalTo: post.author)
-        query?.limit = 20
+        query?.limit = 15
                 
         // fetch data asynchronously
         query?.findObjectsInBackground(block: { (incomingPosts, error) in
@@ -115,7 +116,7 @@ class ProfileViewController: UIViewController, UICollectionViewDataSource, UINav
                         .strokeColor : UIColor.white,
                         .foregroundColor : UIColor(cgColor: #colorLiteral(red: 0.1019607857, green: 0.2784313858, blue: 0.400000006, alpha: 1)),  /*UIColor(red: 0.5, green: 0.25, blue: 0.15, alpha: 0.8)*/
                         .strokeWidth : -1,
-                        .font : UIFont.boldSystemFont(ofSize: 17)
+                        .font : UIFont.boldSystemFont(ofSize: 21)
                     ]
                     
                     //set the name and put in the attributes for it
@@ -128,44 +129,17 @@ class ProfileViewController: UIViewController, UICollectionViewDataSource, UINav
                 // 2. Get post # How many posts have user posted
                 self.postCountLabel.text = "\(self.posts.count)"
                     
-                // 3. get Image
-                if let profile_Image = post.author["image"] {
-                    self.PFPhotoView.file = profile_Image as? PFFile
-                    print("imagen file xxx: \(String(describing: self.PFPhotoView.file))")
+                // 3. get img profile pic
+                if let userPicture = PFUser.current()?["image"] as? PFFile {
+                        
+                    self.PFPhotoView.file = userPicture
+                    print("imagen file xxxuuu: \(String(describing: self.PFPhotoView.file))")
                         
                     self.PFPhotoView.load(inBackground: {(imagen, error) in
+                        //print("pngDATA: \(String(describing: imagen)))")
                         self.profileImage.image = imagen
                     })
                 }
-                
-                    if let userPicture = PFUser.current()?["image"] as? PFFile {
-                        
-                        self.PFPhotoView.file = userPicture
-                        print("imagen file xxxuuu: \(String(describing: self.PFPhotoView.file))")
-                        
-                        self.PFPhotoView.load(inBackground: {(imagen, error) in
-                            print("pngDATA: \(String(describing: imagen)))")
-                            self.profileImage.image = UIImage(data: (imagen?.pngData()!)!)
-                        })
-                    }
-                    /*
-                var instagramPost: PFObject! {
-                    didSet {
-                        self.PFPhotoView.file = instagramPost["media"] as? PFFile
-                        self.PFPhotoView.load(inBackground: {(imagen, error) in
-                            self.profileImage.image = imagen
-                        })
-                    }
-                }
-                
-                self.PFPhotoView.file = (post.author["profile_Image"] as! PFFile)
-                print("imagen file xxx: \(String(describing: self.PFPhotoView.file))")
-                    
-                    self.PFPhotoView.load(inBackground: {(imagen, error) in
-                    self.profileImage.image = imagen
-                        
-                })
-*/
                 
                 //reload collection after all movies are input in movies array
                 self.collectionView.reloadData()
@@ -189,30 +163,6 @@ class ProfileViewController: UIViewController, UICollectionViewDataSource, UINav
         return newImage!
     }
     
-    @objc func callSetImagePicker(){
-    
-        setImagePicker(){ success in
-        
-            // Display HUD right before the request is made
-            MBProgressHUD.showAdded(to: self.view, animated: true)
-            
-            let post = Post()
-            //Get the current user and assign it to "author" field. "author" field is now of Pointer type
-            post.author = PFUser.current()!
-            
-            //Making network posting image to Parse-Server
-            self.updateCurrentUserProfilePicture(image: self.profileImage.image!)
-            
-            
-            DispatchQueue.main.asyncAfter(deadline: .now() + 2) { // change 2 to desired number of seconds
-            // Your code with delay
-            
-                // Hide HUD once the network request comes back (must be done on main UI thread)
-                MBProgressHUD.hide(for: self.view, animated: true)
-            }
-        }
-    }
-    
     func updateCurrentUserProfilePicture(image: UIImage) {
         let avatar = PFFile(name: PFUser.current()!.username, data: image.pngData()!)
         PFUser.current()!.setObject(avatar!, forKey: "image")
@@ -221,7 +171,7 @@ class ProfileViewController: UIViewController, UICollectionViewDataSource, UINav
         })
     }
     
-    func setImagePicker(completion: @escaping ((_ success: Bool)->())){
+    @objc func setImagePicker(){
         
         let PickerVC = UIImagePickerController()
         PickerVC.delegate = self
@@ -230,12 +180,10 @@ class ProfileViewController: UIViewController, UICollectionViewDataSource, UINav
         if UIImagePickerController.isSourceTypeAvailable(.camera) {
             print("Camera is available 📸")
             PickerVC.sourceType = .camera
-            completion(true)
         } else {
             print("Camera 🚫 available so we will use photo library instead")
             //image will be dragged from photoLibrary
             PickerVC.sourceType = .photoLibrary
-            completion(true)
         }
         
         self.present(PickerVC, animated: true, completion: nil)
@@ -257,6 +205,9 @@ class ProfileViewController: UIViewController, UICollectionViewDataSource, UINav
             let imageEdited = resize(image: editedImage, newSize: size)
             profileImage.image = imageEdited
             
+            //Making network posting image to Parse-Server
+            self.updateCurrentUserProfilePicture(image: self.profileImage.image!)
+            
         } else if let image = info[.originalImage] as? UIImage {
             print("Original Image was taken")
             
@@ -268,6 +219,9 @@ class ProfileViewController: UIViewController, UICollectionViewDataSource, UINav
             
             //put it in the image view
             profileImage.image = img
+            
+            //Making network posting image to Parse-Server
+            self.updateCurrentUserProfilePicture(image: self.profileImage.image!)
             
         } else {
             //Error Message

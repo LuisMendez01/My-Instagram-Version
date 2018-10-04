@@ -153,7 +153,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="414" height="813"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="vegeta" translatesAutoresizingMaskIntoConstraints="NO" id="nL7-z8-C0h">
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="instaLaunch" translatesAutoresizingMaskIntoConstraints="NO" id="nL7-z8-C0h" customClass="PFImageView">
                                 <rect key="frame" x="20" y="132" width="150" height="150"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="150" id="QSm-PU-nlM"/>
@@ -251,12 +251,15 @@
         <!--Home-->
         <scene sceneID="AQA-Yz-9Cy">
             <objects>
-                <navigationController title="Home" automaticallyAdjustsScrollViewInsets="NO" id="RoH-FI-l7F" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Feed" selectedImage="feed_tab" id="S4J-Q0-SA6"/>
+                <navigationController storyboardIdentifier="navBarID" title="Home" automaticallyAdjustsScrollViewInsets="NO" id="RoH-FI-l7F" sceneMemberID="viewController">
+                    <tabBarItem key="tabBarItem" title="Feed" image="feed_tab" selectedImage="feed_tab" id="S4J-Q0-SA6">
+                        <color key="badgeColor" name="alternateSelectedControlColor" catalog="System" colorSpace="catalog"/>
+                    </tabBarItem>
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="unB-nh-bu5">
                         <rect key="frame" x="0.0" y="44" width="414" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
+                        <color key="barTintColor" red="0.61568627450000002" green="0.67450980390000004" blue="0.74901960779999999" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                     </navigationBar>
                     <nil name="viewControllers"/>
                     <connections>
@@ -275,6 +278,10 @@
                     <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="4vP-J7-0hG">
                         <rect key="frame" x="0.0" y="44" width="414" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
+                        <color key="barTintColor" red="0.61568627450000002" green="0.67450980390000004" blue="0.74901960779999999" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                        <textAttributes key="titleTextAttributes">
+                            <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        </textAttributes>
                     </navigationBar>
                     <nil name="viewControllers"/>
                     <connections>
@@ -288,13 +295,13 @@
         <!--Tab Bar Controller-->
         <scene sceneID="oZt-X1-I5T">
             <objects>
-                <tabBarController storyboardIdentifier="theTabBarController" automaticallyAdjustsScrollViewInsets="NO" useStoryboardIdentifierAsRestorationIdentifier="YES" id="kbe-T1-gax" sceneMemberID="viewController">
+                <tabBarController storyboardIdentifier="theTabBarController" automaticallyAdjustsScrollViewInsets="NO" id="kbe-T1-gax" sceneMemberID="viewController">
                     <toolbarItems/>
                     <tabBar key="tabBar" opaque="NO" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" translucent="NO" id="eK8-Kb-Wzo">
                         <rect key="frame" x="0.0" y="0.0" width="1000" height="1000"/>
                         <autoresizingMask key="autoresizingMask"/>
-                        <color key="backgroundColor" red="0.61568627450000002" green="0.67450980390000004" blue="0.74901960779999999" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
-                        <color key="selectedImageTintColor" red="0.61568627450980395" green="0.67450980392156867" blue="0.74901960784313726" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                        <color key="barTintColor" red="0.61568627450000002" green="0.67450980390000004" blue="0.74901960779999999" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                        <color key="selectedImageTintColor" white="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     </tabBar>
                     <connections>
                         <segue destination="RoH-FI-l7F" kind="relationship" relationship="viewControllers" id="Frv-ud-jEi"/>
@@ -309,11 +316,17 @@
         <scene sceneID="GiU-Q3-rfh">
             <objects>
                 <navigationController title="Profile" automaticallyAdjustsScrollViewInsets="NO" id="3Ir-FY-qPi" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Profile" selectedImage="profile_tab" id="CVf-SH-Xks"/>
+                    <tabBarItem key="tabBarItem" title="Profile" image="profile_tab" selectedImage="profile_tab" id="CVf-SH-Xks">
+                        <color key="badgeColor" name="alternateSelectedControlColor" catalog="System" colorSpace="catalog"/>
+                    </tabBarItem>
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="52H-lh-Qp7">
                         <rect key="frame" x="0.0" y="44" width="414" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
+                        <color key="barTintColor" red="0.61568627450000002" green="0.67450980390000004" blue="0.74901960779999999" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                        <textAttributes key="titleTextAttributes">
+                            <color key="textColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        </textAttributes>
                     </navigationBar>
                     <nil name="viewControllers"/>
                     <connections>
@@ -328,8 +341,8 @@
     <resources>
         <image name="feed_tab" width="25" height="25"/>
         <image name="image_placeholder" width="375" height="375"/>
+        <image name="instaLaunch" width="512" height="512"/>
         <image name="instaTitle" width="704" height="199"/>
         <image name="profile_tab" width="25" height="25"/>
-        <image name="vegeta" width="1080" height="1080"/>
     </resources>
 </document>
