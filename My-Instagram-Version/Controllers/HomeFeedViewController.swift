@@ -117,14 +117,15 @@ class HomeFeedViewController: UIViewController, UITableViewDelegate, UITableView
     
     func setTableView(){
 
-        //let barHeight: CGFloat = UIApplication.shared.statusBarFrame.size.height
+        //Times 2 for barHeight because I have a NavBar tab at bottom as well NavBar Controller top
+        let barHeight: CGFloat = UIApplication.shared.statusBarFrame.size.height*2
         let displayWidth: CGFloat = self.view.frame.width//self is this VC width
         let displayHeight: CGFloat = self.view.frame.height//self is this VC height
         
         //to be used in PostTableViewCell
         tableWidth = displayWidth
 
-        myTableView = UITableView(frame: CGRect(x: 0, y: 0, width: displayWidth, height: displayHeight), style: .grouped)
+        myTableView = UITableView(frame: CGRect(x: 0, y: 0, width: displayWidth, height: displayHeight-barHeight), style: .grouped)
         myTableView.register(PostTableViewCell.self, forCellReuseIdentifier: "cell")
         myTableView.dataSource = self
         myTableView.delegate = self
@@ -189,24 +190,6 @@ class HomeFeedViewController: UIViewController, UITableViewDelegate, UITableView
                 print(error?.localizedDescription as Any)
             }
             })
-        
-//        // construct query
-//        let predicate = NSPredicate(format: "likesCount > 100")
-//        var query = Post.query(with: predicate)
-//
-//        // fetch data asynchronously
-//        query!.findObjectsInBackground(block: { (incomingPosts, error) in
-//            if let posts = incomingPosts {
-//                // do something with the array of object returned by the call
-//                for post in posts {
-//                    // access the object as a dictionary and cast type
-//                    let likeCount = post.likesCount
-//                }
-//            } else {
-//                print(error?.localizedDescription as Any)
-//            }
-//        })
-
     }
     
     func setTitleInNavBar(){
@@ -324,25 +307,26 @@ class HomeFeedViewController: UIViewController, UITableViewDelegate, UITableView
         profileView.layer.borderColor = UIColor(white: 0.7, alpha: 0.8).cgColor
         profileView.layer.borderWidth = 1;
         
-//        if let img = self.posts[section]["media"]{
-//            let img = (img as! PFFile).name
-//
-//            print("esto es el file name: \(img)")
-//        }
-//
-//        //set image from Parse-Server
-//        let PFPhotoView = PFImageView()
-//
-//        PFPhotoView.file = (self.posts[section]["media"] as! PFFile)
-//        print("imagen file: \(String(describing: self.imagen.file))")
-//
-//        print("section #: \(section)")
-//        PFPhotoView.load(inBackground: {(imagen, error) in
-//            profileView.image = imagen
-//        })
-    
-        // Set the avatar
-        profileView.image = UIImage(named: "vegeta.png")
+        /*
+        print("post.author.username: \(String(describing: (self.posts[section]["author"] as! PFObject)["username"]))")
+        print("KKKKKKKK: \(String(describing: (self.posts[section]["author"] as! PFObject)["image"]))")
+         */
+            // Get img profile pic
+        if let userPicture = (self.posts[section]["author"] as! PFObject)["image"] {
+        
+            self.PFPhotoView.file = userPicture as? PFFile
+                print("imagen file xxxuuu: \(String(describing: self.PFPhotoView.file))")
+                
+                self.PFPhotoView.load(inBackground: {(imagen, error) in
+                    
+                    profileView.image = imagen//image setting
+                })
+            } else {
+                
+                // Set the avatar placedholder
+                profileView.image = UIImage(named: "vegeta.png")//image setting
+            }
+        
         headerView.addSubview(profileView)
         
         let labelUsername = UILabel(frame: CGRect(x: 55, y: 10, width: 250, height: 30))
@@ -527,3 +511,20 @@ class HomeFeedViewController: UIViewController, UITableViewDelegate, UITableView
  
  navigationItem.rightBarButtonItems = [add, play]
  */
+
+//        // construct query
+//        let predicate = NSPredicate(format: "likesCount > 100")
+//        var query = Post.query(with: predicate)
+//
+//        // fetch data asynchronously
+//        query!.findObjectsInBackground(block: { (incomingPosts, error) in
+//            if let posts = incomingPosts {
+//                // do something with the array of object returned by the call
+//                for post in posts {
+//                    // access the object as a dictionary and cast type
+//                    let likeCount = post.likesCount
+//                }
+//            } else {
+//                print(error?.localizedDescription as Any)
+//            }
+//        })

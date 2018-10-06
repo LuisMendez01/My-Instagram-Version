@@ -77,16 +77,10 @@ class ProfileViewController: UIViewController, UICollectionViewDataSource, UINav
      ************************/
     func fetchData(){
         
-        let post = Post()
-        //Get the current user and assign it to "author" field. "author" field is now of Pointer type
-        post.author = PFUser.current()!
-      
-        print("post.author.username: \(String(describing: post.author.username))")
-        
         let query = Post.query()
         query?.cachePolicy = .cacheElseNetwork
         query?.order(byDescending: "createdAt")
-        query?.whereKey("author", equalTo: post.author)
+        query?.whereKey("author", equalTo: PFUser.current()!)
         query?.limit = 15
                 
         // fetch data asynchronously
@@ -104,7 +98,7 @@ class ProfileViewController: UIViewController, UICollectionViewDataSource, UINav
                 print(incomingPosts)
                     
                 // 1. unwrap username value to be used
-                if let username = post.author.username {
+                    if let username = PFUser.current()!.username {
                     print("Username: \(username)")
                     self.usernameLabel.text = username
                     
