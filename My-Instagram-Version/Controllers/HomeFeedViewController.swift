@@ -68,11 +68,11 @@ class HomeFeedViewController: UIViewController, UITableViewDelegate, UITableView
         isPostLiked()
         
         //********** For image profile to be used ********//
-        let imageTap =  UITapGestureRecognizer(target: self, action: #selector(isPostLiked))
+        let imageTap3 =  UITapGestureRecognizer(target: self, action: #selector(isPostLiked))
         
         //to be able to use it by just tapping on image
         heartView.isUserInteractionEnabled = true
-        heartView.addGestureRecognizer(imageTap)
+        heartView.addGestureRecognizer(imageTap3)
 
         
         print("User is homeFeed: \(String(describing: PFUser.current()))")
@@ -82,6 +82,19 @@ class HomeFeedViewController: UIViewController, UITableViewDelegate, UITableView
     /************************
      * MY CREATED FUNCTIONS *
      ************************/
+    @objc func toPostUsersProfile(){
+        
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+    
+        // view controller currently being set in Storyboard as default will be overridden
+        let profileVC = storyboard.instantiateViewController(withIdentifier: "profileIdVC") as! ProfileViewController
+        //let navigationController = UINavigationController(rootViewController:  profileVC)
+        //self.present(profileVC, animated: true, completion: nil)
+        
+        profileVC.hidesBottomBarWhenPushed = true
+        navigationController?.pushViewController(profileVC, animated: true)
+    }
+    
     @objc func isPostLiked(){
         print("ppppppp iaPoarLikws")/*
         var count = 0
@@ -306,6 +319,15 @@ class HomeFeedViewController: UIViewController, UITableViewDelegate, UITableView
         profileView.layer.cornerRadius = 15;
         profileView.layer.borderColor = UIColor(white: 0.7, alpha: 0.8).cgColor
         profileView.layer.borderWidth = 1;
+        
+        
+        
+        //********** for rounded avatar user's profile pic on headerView ********//
+        let imageTap =  UITapGestureRecognizer(target: self, action: #selector(toPostUsersProfile))
+        
+        //to be able to use it by just tapping on image
+        profileView.isUserInteractionEnabled = true
+        profileView.addGestureRecognizer(imageTap)
         
         /*
         print("post.author.username: \(String(describing: (self.posts[section]["author"] as! PFObject)["username"]))")

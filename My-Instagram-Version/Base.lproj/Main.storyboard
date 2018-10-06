@@ -85,7 +85,7 @@
         <!--Home Feed View Controller-->
         <scene sceneID="U6d-us-545">
             <objects>
-                <viewController storyboardIdentifier="homeFeedVC" useStoryboardIdentifierAsRestorationIdentifier="YES" id="ISQ-Bc-mlL" customClass="HomeFeedViewController" customModule="My_Instagram_Version" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="homeFeedVC" id="ISQ-Bc-mlL" customClass="HomeFeedViewController" customModule="My_Instagram_Version" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="yHG-EI-I8R">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="813"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -148,7 +148,7 @@
         <!--Profile-->
         <scene sceneID="8AW-1U-7Hx">
             <objects>
-                <viewController storyboardIdentifier="ProfileIDVC" useStoryboardIdentifierAsRestorationIdentifier="YES" id="E9g-wf-Egg" customClass="ProfileViewController" customModule="My_Instagram_Version" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="profileIdVC" id="E9g-wf-Egg" customClass="ProfileViewController" customModule="My_Instagram_Version" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="1vw-8C-QMM">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="813"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -251,7 +251,7 @@
         <!--Home-->
         <scene sceneID="AQA-Yz-9Cy">
             <objects>
-                <navigationController storyboardIdentifier="navBarID" title="Home" automaticallyAdjustsScrollViewInsets="NO" id="RoH-FI-l7F" sceneMemberID="viewController">
+                <navigationController storyboardIdentifier="homeNavID" title="Home" automaticallyAdjustsScrollViewInsets="NO" id="RoH-FI-l7F" sceneMemberID="viewController">
                     <tabBarItem key="tabBarItem" title="Feed" image="feed_tab" selectedImage="feed_tab" id="S4J-Q0-SA6">
                         <color key="badgeColor" name="alternateSelectedControlColor" catalog="System" colorSpace="catalog"/>
                     </tabBarItem>
@@ -315,7 +315,7 @@
         <!--Profile-->
         <scene sceneID="GiU-Q3-rfh">
             <objects>
-                <navigationController title="Profile" automaticallyAdjustsScrollViewInsets="NO" id="3Ir-FY-qPi" sceneMemberID="viewController">
+                <navigationController storyboardIdentifier="profileNavID" title="Profile" automaticallyAdjustsScrollViewInsets="NO" id="3Ir-FY-qPi" sceneMemberID="viewController">
                     <tabBarItem key="tabBarItem" title="Profile" image="profile_tab" selectedImage="profile_tab" id="CVf-SH-Xks">
                         <color key="badgeColor" name="alternateSelectedControlColor" catalog="System" colorSpace="catalog"/>
                     </tabBarItem>
