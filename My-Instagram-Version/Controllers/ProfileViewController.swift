@@ -20,6 +20,8 @@ class ProfileViewController: UIViewController, UICollectionViewDataSource, UINav
     var posts: [PFObject] = []
     let PFPhotoView = PFImageView()//set image from Parse-Server to collectionView
     
+    var userPost: PFObject = PFUser.current()!//HomeFeed pushing user PFObject to extract username and image to show user's profile
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -80,7 +82,7 @@ class ProfileViewController: UIViewController, UICollectionViewDataSource, UINav
         let query = Post.query()
         query?.cachePolicy = .cacheElseNetwork
         query?.order(byDescending: "createdAt")
-        query?.whereKey("author", equalTo: PFUser.current()!)
+        query?.whereKey("author", equalTo: userPost)//["username"] as! String
         query?.limit = 15
                 
         // fetch data asynchronously
@@ -98,9 +100,9 @@ class ProfileViewController: UIViewController, UICollectionViewDataSource, UINav
                 print(incomingPosts)
                     
                 // 1. unwrap username value to be used
-                    if let username = PFUser.current()!.username {
+                    if let username = self.userPost["username"] {
                     print("Username: \(username)")
-                    self.usernameLabel.text = username
+                        self.usernameLabel.text = username as? String
                     
                     /*********** Set Title of Bar Controller to username **************/
                     let titleLabel = UILabel()//for the title of the page
@@ -114,7 +116,7 @@ class ProfileViewController: UIViewController, UICollectionViewDataSource, UINav
                     ]
                     
                     //set the name and put in the attributes for it
-                    let titleText = NSAttributedString(string: username, attributes: strokeTextAttributes)
+                        let titleText = NSAttributedString(string: username as! String, attributes: strokeTextAttributes)
                     titleLabel.attributedText = titleText
                     titleLabel.sizeToFit()
                     self.navigationItem.titleView = titleLabel
@@ -124,7 +126,7 @@ class ProfileViewController: UIViewController, UICollectionViewDataSource, UINav
                 self.postCountLabel.text = "\(self.posts.count)"
                     
                 // 3. get img profile pic
-                if let userPicture = PFUser.current()?["image"] as? PFFile {
+                if let userPicture = self.userPost["image"]  as? PFFile {
                         
                     self.PFPhotoView.file = userPicture
                     print("imagen file xxxuuu: \(String(describing: self.PFPhotoView.file))")

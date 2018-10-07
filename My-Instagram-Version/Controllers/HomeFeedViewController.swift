@@ -34,7 +34,9 @@ class HomeFeedViewController: UIViewController, UITableViewDelegate, UITableView
     var loadingMoreView:InfiniteScrollActivityView?
     
     var limit: Int = 5
-
+    
+    var userOnClick: PFObject? = nil
+    
     /*******************************************
      * UIVIEW CONTROLLER LIFECYCLES FUNCTIONS *
      *******************************************/
@@ -82,21 +84,28 @@ class HomeFeedViewController: UIViewController, UITableViewDelegate, UITableView
     /************************
      * MY CREATED FUNCTIONS *
      ************************/
-    @objc func toPostUsersProfile(){
-        
+    @objc func toPostUsersProfile(sender: UIButton!){
+
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
     
         // view controller currently being set in Storyboard as default will be overridden
         let profileVC = storyboard.instantiateViewController(withIdentifier: "profileIdVC") as! ProfileViewController
         //let navigationController = UINavigationController(rootViewController:  profileVC)
         //self.present(profileVC, animated: true, completion: nil)
-        
+    
         profileVC.hidesBottomBarWhenPushed = true
+        profileVC.userPost = (posts[sender.tag]["author"] as? PFObject)!
         navigationController?.pushViewController(profileVC, animated: true)
     }
     
     @objc func isPostLiked(){
         print("ppppppp iaPoarLikws")/*
+         
+         let singleTap = UIShortTapGestureRecognizer(target: self, action: "singleTap:")
+         singleTap.numberOfTapsRequired = 1
+         singleTap.numberOfTouchesRequired = 1
+         tableView.addGestureRecognizer(singleTap)
+         
         var count = 0
         if !isHeartLIked {
             ON_OFF_HeartView.image = UIImage(named: "heart1.png")
@@ -313,6 +322,13 @@ class HomeFeedViewController: UIViewController, UITableViewDelegate, UITableView
         //headerView.backgroundColor = UIColor(white: 1, alpha: 0.9)
         headerView.backgroundColor = #colorLiteral(red: 0.6156862745, green: 0.6745098039, blue: 0.7490196078, alpha: 1)
         
+        let invisibleHeaderBtn = UIButton(frame: CGRect(x: 0, y: 0, width: 320, height: 50))
+        invisibleHeaderBtn.setTitle("", for: .normal)
+        invisibleHeaderBtn.setTitleColor(UIColor.blue, for: .normal)
+        invisibleHeaderBtn.tag = section
+        invisibleHeaderBtn.addTarget(self, action: #selector(toPostUsersProfile), for: .touchUpInside)
+        headerView.addSubview(invisibleHeaderBtn)
+        
         let profileView = UIImageView(frame: CGRect(x: 10, y: 10, width: 30, height: 30))
         //profileView.Cl  = PFImageView
         profileView.clipsToBounds = true
@@ -320,14 +336,12 @@ class HomeFeedViewController: UIViewController, UITableViewDelegate, UITableView
         profileView.layer.borderColor = UIColor(white: 0.7, alpha: 0.8).cgColor
         profileView.layer.borderWidth = 1;
         
-        
-        
         //********** for rounded avatar user's profile pic on headerView ********//
-        let imageTap =  UITapGestureRecognizer(target: self, action: #selector(toPostUsersProfile))
-        
+       // let imageTap =  UITapGestureRecognizer(target: self, action: #selector(toPostUsersProfile))
+            
         //to be able to use it by just tapping on image
-        profileView.isUserInteractionEnabled = true
-        profileView.addGestureRecognizer(imageTap)
+        //profileView.isUserInteractionEnabled = true
+        //profileView.addGestureRecognizer(imageTap)
         
         /*
         print("post.author.username: \(String(describing: (self.posts[section]["author"] as! PFObject)["username"]))")
