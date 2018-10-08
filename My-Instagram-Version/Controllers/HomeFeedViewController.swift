@@ -9,12 +9,11 @@
 import UIKit
 import Parse
 
-var tableWidth: CGFloat = 0
+var tableWidth: CGFloat = 0//used in PostTableViewCell.swift views
 
 class HomeFeedViewController: UIViewController, UITableViewDelegate, UITableViewDataSource  {
     
     var posts: [PFObject] = []
-    var checked: [Bool]!//for checkmark on row clicked, hide/show footer on row click
     var myTableView: UITableView!
     
     //set image from Parse-Server
@@ -67,23 +66,61 @@ class HomeFeedViewController: UIViewController, UITableViewDelegate, UITableView
         myTableView.addSubview(loadingMoreView!)
         
         /********* calling to see if image was liked or not and set it ********/
-        isPostLiked()
+        //isPostLiked()
         
         //********** For image profile to be used ********//
-        let imageTap3 =  UITapGestureRecognizer(target: self, action: #selector(isPostLiked))
+        //let imageTap3 =  UITapGestureRecognizer(target: self, action: #selector(isPostLiked))
         
         //to be able to use it by just tapping on image
-        heartView.isUserInteractionEnabled = true
-        heartView.addGestureRecognizer(imageTap3)
+        //heartView.isUserInteractionEnabled = true
+        //heartView.addGestureRecognizer(imageTap3)
 
         
         print("User is homeFeed: \(String(describing: PFUser.current()))")
         
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        myTableView.reloadData()
+    }
+    
     /************************
      * MY CREATED FUNCTIONS *
      ************************/
+    @objc func incrementLikes(sender: UIButton!){
+        
+        if let likesCount = posts[sender.tag]["likesCount"]{
+            let likesCount = (likesCount as? Int)! + 1
+            posts[sender.tag]["likesCount"] = likesCount
+            print("likesCount: \(likesCount)")
+            
+            posts[sender.tag].setObject(likesCount, forKey: "likesCount")
+            posts[sender.tag].saveInBackground(block: {(success: Bool, error: Error?) -> Void in
+                
+            })
+            
+            self.myTableView.reloadSections([sender.tag], with: .none)
+        }
+        
+    }
+    
+    @objc func incrementComments(sender: UIButton!){
+        
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        
+        // view controller currently being set in Storyboard as default will be overridden
+        let profileVC = storyboard.instantiateViewController(withIdentifier: "commentsIdVC") as! CommentsViewController
+        //let navigationController = UINavigationController(rootViewController:  profileVC)
+        //self.present(profileVC, animated: true, completion: nil)
+        
+        profileVC.hidesBottomBarWhenPushed = true
+        profileVC.commentPost = posts[sender.tag]
+        navigationController?.pushViewController(profileVC, animated: true)
+        
+    }
+    
     @objc func toPostUsersProfile(sender: UIButton!){
 
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
@@ -96,34 +133,6 @@ class HomeFeedViewController: UIViewController, UITableViewDelegate, UITableView
         profileVC.hidesBottomBarWhenPushed = true
         profileVC.userPost = (posts[sender.tag]["author"] as? PFObject)!
         navigationController?.pushViewController(profileVC, animated: true)
-    }
-    
-    @objc func isPostLiked(){
-        print("ppppppp iaPoarLikws")/*
-         
-         let singleTap = UIShortTapGestureRecognizer(target: self, action: "singleTap:")
-         singleTap.numberOfTapsRequired = 1
-         singleTap.numberOfTouchesRequired = 1
-         tableView.addGestureRecognizer(singleTap)
-         
-        var count = 0
-        if !isHeartLIked {
-            ON_OFF_HeartView.image = UIImage(named: "heart1.png")
-            posts[selectedSectionIndexTracker]["isHeartLIked"] = true
-            count = 1
-        } else {
-            ON_OFF_HeartView.image = UIImage(named: "heart2.png")
-            posts[selectedSectionIndexTracker]["isHeartLIked"] = false
-            count = -1
-        }
-        
-        if selectedSectionIndexTracker != -1 {
-            if let likesCount = posts[selectedSectionIndexTracker]["likesCount"]{
-                let likesCount = (likesCount as? Int)! + count
-                posts[selectedSectionIndexTracker]["likesCount"] = likesCount
-                print("pppppppp\(likesCount)")
-            }
-        }*/
     }
     
     @objc func refreshControlAction(_ refreshControl: UIRefreshControl){
@@ -140,7 +149,8 @@ class HomeFeedViewController: UIViewController, UITableViewDelegate, UITableView
     func setTableView(){
 
         //Times 2 for barHeight because I have a NavBar tab at bottom as well NavBar Controller top
-        let barHeight: CGFloat = UIApplication.shared.statusBarFrame.size.height*2
+        //-5 because I could still part of tableView on top of NavBar,
+        let barHeight: CGFloat = (UIApplication.shared.statusBarFrame.size.height*2)-5
         let displayWidth: CGFloat = self.view.frame.width//self is this VC width
         let displayHeight: CGFloat = self.view.frame.height//self is this VC height
         
@@ -173,6 +183,7 @@ class HomeFeedViewController: UIViewController, UITableViewDelegate, UITableView
         //query?.addDescendingOrder("createdAt")
         //query?.whereKey("likesCount", lessThan: 100)
         query?.includeKey("author")
+        //query?.cachePolicy = .cacheElseNetwork
         query?.limit = self.limit
 
         self.limit = self.limit+5
@@ -192,9 +203,6 @@ class HomeFeedViewController: UIViewController, UITableViewDelegate, UITableView
                 // do something with the array of object returned by the call
                 self.posts = incomingPosts
                 print(incomingPosts)
-                
-                //populate this array to false as we need all footers to show to start at
-                self.checked = [Bool](repeating: false, count: self.posts.count+1)
                 
                 DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
                     //allow to fetch again once this is false from DidScroll function
@@ -296,13 +304,7 @@ class HomeFeedViewController: UIViewController, UITableViewDelegate, UITableView
         
         // No color when the user selects cell
         cell.selectionStyle = .none
-/*
-        if let img = self.posts[indexPath.row]["media"]{
-            let img = (img as! PFFile).name
 
-            print("esto es el file name: \(img)")
-        }
-*/
         PFPhotoView.file = (self.posts[indexPath.section]["media"] as! PFFile)
         print("imagen file: \(String(describing: self.PFPhotoView.file))")
 
@@ -322,11 +324,14 @@ class HomeFeedViewController: UIViewController, UITableViewDelegate, UITableView
         //headerView.backgroundColor = UIColor(white: 1, alpha: 0.9)
         headerView.backgroundColor = #colorLiteral(red: 0.6156862745, green: 0.6745098039, blue: 0.7490196078, alpha: 1)
         
+        //This button will be on the headerView view above the image and username to clicked
+        //to go to that specific user's profile page
         let invisibleHeaderBtn = UIButton(frame: CGRect(x: 0, y: 0, width: 320, height: 50))
         invisibleHeaderBtn.setTitle("", for: .normal)
         invisibleHeaderBtn.setTitleColor(UIColor.blue, for: .normal)
         invisibleHeaderBtn.tag = section
         invisibleHeaderBtn.addTarget(self, action: #selector(toPostUsersProfile), for: .touchUpInside)
+        
         headerView.addSubview(invisibleHeaderBtn)
         
         let profileView = UIImageView(frame: CGRect(x: 10, y: 10, width: 30, height: 30))
@@ -336,17 +341,11 @@ class HomeFeedViewController: UIViewController, UITableViewDelegate, UITableView
         profileView.layer.borderColor = UIColor(white: 0.7, alpha: 0.8).cgColor
         profileView.layer.borderWidth = 1;
         
-        //********** for rounded avatar user's profile pic on headerView ********//
-       // let imageTap =  UITapGestureRecognizer(target: self, action: #selector(toPostUsersProfile))
-            
-        //to be able to use it by just tapping on image
-        //profileView.isUserInteractionEnabled = true
-        //profileView.addGestureRecognizer(imageTap)
-        
         /*
         print("post.author.username: \(String(describing: (self.posts[section]["author"] as! PFObject)["username"]))")
         print("KKKKKKKK: \(String(describing: (self.posts[section]["author"] as! PFObject)["image"]))")
          */
+        
             // Get img profile pic
         if let userPicture = (self.posts[section]["author"] as! PFObject)["image"] {
         
@@ -392,13 +391,35 @@ class HomeFeedViewController: UIViewController, UITableViewDelegate, UITableView
         //headerView.backgroundColor = UIColor(white: 1, alpha: 0.9)
         footerView.backgroundColor = #colorLiteral(red: 0.8153101802, green: 0.8805506825, blue: 0.8921775818, alpha: 0.92)
         
+        /***********Invisible button for likes*************************/
+        //This button will be on the headerView view above the image and username to clicked
+        //to go to that specific user's profile page
+        let invisibleFooterHeartBtn = UIButton(frame: CGRect(x: 10, y: 10, width: 30, height: 30))
+        invisibleFooterHeartBtn.setTitle("", for: .normal)
+        invisibleFooterHeartBtn.setTitleColor(UIColor.blue, for: .normal)
+        invisibleFooterHeartBtn.tag = section
+        invisibleFooterHeartBtn.addTarget(self, action: #selector(incrementLikes), for: .touchUpInside)
+        
+        footerView.addSubview(invisibleFooterHeartBtn)
+        
         /**************set heart like*******************/
         //this is instatiated at the beginning for the gesture recognizer
-        //let heartView = UIImageView(frame: CGRect(x: 10, y: 10, width: 30, height: 30))
-        
+        let heartView = UIImageView(frame: CGRect(x: 10, y: 10, width: 30, height: 30))
+    
         // Set heart icon image
-        heartView.image = ON_OFF_HeartView.image
+        heartView.image = UIImage(named: "heart1.png")//ON_OFF_HeartView.image
         footerView.addSubview(heartView)
+        
+        /***************Comments image **********************************/
+        //This button will be on the headerView view above the image and username to clicked
+        //to go to that specific user's profile page
+        let iconCommentFooterBtn = UIButton(frame: CGRect(x: 50, y: 13, width: 23, height: 23))
+        let btnImage = UIImage(named: "comment.png")
+        iconCommentFooterBtn.setImage(btnImage, for: .normal)
+        iconCommentFooterBtn.tag = section
+        iconCommentFooterBtn.addTarget(self, action: #selector(incrementComments), for: .touchUpInside)
+        
+        footerView.addSubview(iconCommentFooterBtn)
         
         /**************show the captions*******************/
         let labelCaption = UILabel(frame: CGRect(x: 10, y: 40, width: 250, height: 30))
@@ -430,7 +451,7 @@ class HomeFeedViewController: UIViewController, UITableViewDelegate, UITableView
         footerView.addSubview(labelCommentsCount)
         
         /**************show the likes count*******************/
-        let labelLikesCount = UILabel(frame: CGRect(x: self.view.frame.width-60, y: 70, width: 50, height: 30))
+        let labelLikesCount = UILabel(frame: CGRect(x: self.view.frame.width-70, y: 70, width: 80, height: 30))
         labelLikesCount.textAlignment = .left
         labelLikesCount.textColor = #colorLiteral(red: 0.2549019754, green: 0.2745098174, blue: 0.3019607961, alpha: 1)
         
@@ -482,26 +503,15 @@ class HomeFeedViewController: UIViewController, UITableViewDelegate, UITableView
     
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
         
-        //check for section clicked on
-        if checked[section] {
-            return 0
-        }
-        
         return 140
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         print("Num: \(indexPath.section)")
         print("Value: \(posts[indexPath.section])")
-        
-        //what section was selected
-        selectedSectionIndexTracker = indexPath.section
-        
-        //change value of checked section to hide/show
-        checked[indexPath.section] = !checked[indexPath.section]
    
         //self.myTableView.beginUpdates()
-        self.myTableView.reloadRows(at: [indexPath], with: .none)
+        //self.myTableView.reloadRows(at: [indexPath], with: .none)
         //self.myTableView.endUpdates()
     }
     
