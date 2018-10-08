@@ -13,6 +13,7 @@ class CommentsViewController: UIViewController, UITableViewDelegate, UITableView
     
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var textField: UITextField!
+    @IBOutlet weak var postBtn: UIButton!
     
     var commentPost: PFObject? = nil//it's the post PFObject coming from HomeFeedVC
     
@@ -21,14 +22,17 @@ class CommentsViewController: UIViewController, UITableViewDelegate, UITableView
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        
-        /*********set the comment*******/
-        comment()
+        //start with button disabled as textfield starts empty
+        postBtn.isEnabled = false
         
         /*********Title In Nav Bar*******/
         setTitleInNavBar()
         
-        setupViewResizerOnKeyboardShown()
+        /********* Fetch data from Parse-server ********/
+        fetchData()
+        
+        /********** Resizing the scroll view on keyboard appearance **********/
+        setupViewResizerOnKeyboardShown()//see extension at the bottom
         
         tableView.dataSource = self
         tableView.delegate = self
@@ -36,73 +40,23 @@ class CommentsViewController: UIViewController, UITableViewDelegate, UITableView
         tableView.rowHeight = UITableView.automaticDimension
         tableView.estimatedRowHeight = 300//if all rows vary in size
         //estimatedHeightForRowAtIndexPath//to estimate height on different rows if they variate a lot in size
+        
+        textField.addTarget(self, action: #selector(disableBtnPost), for: .editingChanged)
 
     }
     
-    func setupViewResizerOnKeyboardShown() {
-        NotificationCenter.default.addObserver(self,
-                                               selector: #selector(keyboardWillShowForResizing),
-                                               name: UIResponder.keyboardWillShowNotification,
-                                               object: nil)
-        NotificationCenter.default.addObserver(self,
-                                               selector: #selector(keyboardWillHideForResizing),
-                                               name: UIResponder.keyboardWillHideNotification,
-                                               object: nil)
-    }
-    
-    @objc func keyboardWillShowForResizing(notification: Notification) {
-        if let keyboardSize = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue,
-            let window = self.view.window?.frame {
-            // We're not just minusing the kb height from the view height because
-            // the view could already have been resized for the keyboard before
-            self.view.frame = CGRect(x: self.view.frame.origin.x,
-                                     y: self.view.frame.origin.y,
-                                     width: self.view.frame.width,
-                                     height: window.origin.y + window.height - keyboardSize.height)
-        } else {
-            debugPrint("We're showing the keyboard and either the keyboard size or window is nil: panic widely.")
-        }
-    }
-    
-     @objc func keyboardWillHideForResizing(notification: Notification) {
-        if let keyboardSize = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue {
-            let viewHeight = self.view.frame.height
-            self.view.frame = CGRect(x: self.view.frame.origin.x,
-                                     y: self.view.frame.origin.y,
-                                     width: self.view.frame.width,
-                                     height: viewHeight + keyboardSize.height)
-        } else {
-            debugPrint("We're about to hide the keyboard and the keyboard size is nil. Now is the rapture.")
-        }
-    }
-    
-    func comment(){
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
         
-        if let commentCounts = commentPost!["commentsCount"]{
-            let commentsCount = (commentCounts as? Int)! + 1
-            commentPost!["commentsCount"] = commentsCount
-            print("commentsCount: \(commentsCount)")
-            
-            commentPost!.setObject(commentsCount, forKey: "commentsCount")
-            commentPost!.saveInBackground(block: {(success: Bool, error: Error?) -> Void in
-                
-            })
-        }
+        textField.text = ""
     }
     
-    @objc func keyboardWillShow(notification: NSNotification) {
-        if let keyboardSize = (notification.userInfo?[UIResponder.keyboardFrameBeginUserInfoKey] as? NSValue)?.cgRectValue {
-            if self.view.frame.origin.y == 0{
-                self.view.frame.origin.y -= keyboardSize.height
-            }
-        }
-    }
-    
-    @objc func keyboardWillHide(notification: NSNotification) {
-        if let keyboardSize = (notification.userInfo?[UIResponder.keyboardFrameBeginUserInfoKey] as? NSValue)?.cgRectValue {
-            if self.view.frame.origin.y != 0{
-                self.view.frame.origin.y += keyboardSize.height
-            }
+    @objc func disableBtnPost(){
+        
+        if (textField.text?.isEmpty)! {
+            postBtn.isEnabled = false
+        }else {
+            postBtn.isEnabled = true
         }
     }
     
@@ -138,11 +92,101 @@ class CommentsViewController: UIViewController, UITableViewDelegate, UITableView
         cell.backgroundColor = #colorLiteral(red: 0.8153101802, green: 0.8805506825, blue: 0.8921775818, alpha: 0.92)
         cell.textLabel?.numberOfLines =  0
         
-        cell.textLabel!.text = "loco"//comments[indexPath.row]
+        cell.textLabel!.text = comments[indexPath.row]
         
         return cell
     }
 
     @IBAction func commentAction(_ sender: Any) {
+        
+        if let commentCounts = commentPost!["commentsCount"]{
+            let commentsCount = (commentCounts as? Int)! + 1
+            commentPost!["commentsCount"] = commentsCount
+            print("commentsCount: \(commentsCount)")
+            
+            commentPost!.setObject(commentsCount, forKey: "commentsCount")
+            commentPost!.saveInBackground(block: {(success: Bool, error: Error?) -> Void in
+                
+            })
+        }//if
+        
+        comments.append(textField.text!)
+        
+        commentPost!.setObject(comments, forKey: "comments")
+        commentPost!.saveInBackground(block: {(success: Bool, error: Error?) -> Void in
+            
+        })
+        
+        self.tableView.reloadData()
+        textField.text = ""
+    }
+    
+    func fetchData(){
+        
+        let postId = commentPost!.objectId
+        print("xxxxcommentPosts: \(String(describing: postId))")
+        
+        let query = Post.query()
+        query?.whereKey("objectId", equalTo: postId!)
+        
+        query?.findObjectsInBackground(block: { (incomingPost, error) in
+            if let post = incomingPost {
+                
+                //1. post/incomingPost is an array of post, but it's only one post in that array
+                print("incomingPosts: \(post)")
+                
+                //2. So we use post[0] to get that post from the network call
+                //3. Posts may not have comments yet so make sure they do to assign otherwise first one will be assigned in the IBoulet action to post comments
+                if let commentsExists = post[0]["comments"] {
+                    self.comments = commentsExists as! [String]
+                }
+                
+                // Reload the tableView now that there is new data
+                self.tableView.reloadData()
+                
+            } else {
+                print(error?.localizedDescription as Any)
+            }
+        })
+    }
+}
+
+private extension UIViewController{
+    
+    func setupViewResizerOnKeyboardShown() {
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(keyboardWillShowForResizing),
+                                               name: UIResponder.keyboardWillShowNotification,
+                                               object: nil)
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(keyboardWillHideForResizing),
+                                               name: UIResponder.keyboardWillHideNotification,
+                                               object: nil)
+    }
+    
+    @objc func keyboardWillShowForResizing(notification: Notification) {
+        if let keyboardSize = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue,
+            let window = self.view.window?.frame {
+            // We're not just minusing the kb height from the view height because
+            // the view could already have been resized for the keyboard before
+            self.view.frame = CGRect(x: self.view.frame.origin.x,
+                                     y: self.view.frame.origin.y,
+                                     width: self.view.frame.width,
+                                     height: window.origin.y + window.height - keyboardSize.height)
+        } else {
+            debugPrint("We're showing the keyboard and either the keyboard size or window is nil: panic widely.")
+        }
+    }
+    
+    @objc func keyboardWillHideForResizing(notification: Notification) {
+        if let keyboardSize = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue {
+            let viewHeight = self.view.frame.height
+            self.view.frame = CGRect(x: self.view.frame.origin.x,
+                                     y: self.view.frame.origin.y,
+                                     width: self.view.frame.width,
+                                     height: viewHeight + keyboardSize.height)
+        } else {
+            debugPrint("We're about to hide the keyboard and the keyboard size is nil. Now is the rapture.")
+        }
     }
 }

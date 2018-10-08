@@ -176,6 +176,7 @@
                         <viewLayoutGuide key="safeArea" id="cgW-Od-UDM"/>
                     </view>
                     <connections>
+                        <outlet property="postBtn" destination="p5c-Ik-Z8e" id="bKn-rW-7bI"/>
                         <outlet property="tableView" destination="286-cE-Fbb" id="x9r-bQ-GjY"/>
                         <outlet property="textField" destination="vNX-6D-eeg" id="ctQ-vE-kta"/>
                     </connections>
