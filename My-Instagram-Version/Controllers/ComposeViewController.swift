@@ -8,17 +8,32 @@
 
 import UIKit
 import MBProgressHUD
+import CameraManager
 
 class ComposeViewController: UIViewController, UINavigationControllerDelegate, UIImagePickerControllerDelegate {
 
     @IBOutlet weak var imageToPost: UIImageView!
     @IBOutlet weak var captionField: UITextField!
     
+    let cameraManager = CameraManager()
+    
     /*******************************************
      * UIVIEW CONTROLLER LIFECYCLES FUNCTIONS *
      *******************************************/
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        //if you don't want to save in the camera roll, do this
+            //cameraManager.writeFilesToPhoneLibrary = false
+        
+        //cameraManager.addPreviewLayerToView(self.cameraView)
+        
+        cameraManager.capturePictureWithCompletion({ (image, error) -> Void in
+            self.imageToPost.image = image
+        })
+        
+        //validVC.image = capturedImage
+        //let pictureImageData = UIImageJPEGRepresentation(capturedImage, 0.0)
         
         /********* Title In Nav Bar *******/
         setTitleInNavBar()

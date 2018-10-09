@@ -91,6 +91,8 @@ class HomeFeedViewController: UIViewController, UITableViewDelegate, UITableView
      ************************/
     @objc func incrementLikes(sender: UIButton!){
         
+        sender.setImage(UIImage(named: "heart2.png"), for: .normal)
+        
         if let likesCount = posts[sender.tag]["likesCount"]{
             let likesCount = (likesCount as? Int)! + 1
             posts[sender.tag]["likesCount"] = likesCount
@@ -101,7 +103,8 @@ class HomeFeedViewController: UIViewController, UITableViewDelegate, UITableView
                 
             })
             
-            self.myTableView.reloadSections([sender.tag], with: .none)
+            //self.myTableView.reloadSections([sender.tag], with: .none)
+            self.myTableView.reloadData()
         }
         
     }
@@ -395,20 +398,11 @@ class HomeFeedViewController: UIViewController, UITableViewDelegate, UITableView
         //This button will be on the headerView view above the image and username to clicked
         //to go to that specific user's profile page
         let invisibleFooterHeartBtn = UIButton(frame: CGRect(x: 10, y: 10, width: 30, height: 30))
-        invisibleFooterHeartBtn.setTitle("", for: .normal)
-        invisibleFooterHeartBtn.setTitleColor(UIColor.blue, for: .normal)
+        invisibleFooterHeartBtn.setImage(UIImage(named: "heart1.png"), for: .normal)
         invisibleFooterHeartBtn.tag = section
         invisibleFooterHeartBtn.addTarget(self, action: #selector(incrementLikes), for: .touchUpInside)
         
         footerView.addSubview(invisibleFooterHeartBtn)
-        
-        /**************set heart like*******************/
-        //this is instatiated at the beginning for the gesture recognizer
-        let heartView = UIImageView(frame: CGRect(x: 10, y: 10, width: 30, height: 30))
-    
-        // Set heart icon image
-        heartView.image = UIImage(named: "heart1.png")//ON_OFF_HeartView.image
-        footerView.addSubview(heartView)
         
         /***************Comments image **********************************/
         //This button will be on the headerView view above the image and username to clicked

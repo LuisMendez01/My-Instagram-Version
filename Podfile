@@ -9,6 +9,8 @@ target 'My-Instagram-Version' do
     pod 'Parse'
     pod 'Parse/UI'
     pod 'MBProgressHUD'
+    pod 'RSKPlaceholderTextView'
+    pod 'CameraManager', '~> 4.3'
         
 
 end

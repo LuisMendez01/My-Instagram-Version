@@ -8,11 +8,12 @@
 
 import UIKit
 import Parse
+import RSKPlaceholderTextView
 
-class CommentsViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+class CommentsViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UITextViewDelegate {
     
     @IBOutlet weak var tableView: UITableView!
-    @IBOutlet weak var textField: UITextField!
+    @IBOutlet weak var textView: UITextView!
     @IBOutlet weak var postBtn: UIButton!
     
     var commentPost: PFObject? = nil//it's the post PFObject coming from HomeFeedVC
@@ -24,6 +25,12 @@ class CommentsViewController: UIViewController, UITableViewDelegate, UITableView
         
         //start with button disabled as textfield starts empty
         postBtn.isEnabled = false
+        
+        //delegate to start editing on it
+        textView.delegate = self
+        
+        //set placdeholder from Storyboard by giving this class of RSKPlaceholderTextView
+        //textView.placeholder = "Add a comment..."
         
         /*********Title In Nav Bar*******/
         setTitleInNavBar()
@@ -41,23 +48,40 @@ class CommentsViewController: UIViewController, UITableViewDelegate, UITableView
         tableView.estimatedRowHeight = 300//if all rows vary in size
         //estimatedHeightForRowAtIndexPath//to estimate height on different rows if they variate a lot in size
         
-        textField.addTarget(self, action: #selector(disableBtnPost), for: .editingChanged)
+//        //********** For image profile to be used ********//
+//        let textViewOnEditing =  UITapGestureRecognizer(target: self, action: #selector(disableBtnPost))
+//
+//        //to be able to use it by just tapping on image
+//        textView.isUserInteractionEnabled = true
+//        textView.addGestureRecognizer(textViewOnEditing)
+        
+       // textView.addTarget(self, action: #selector(disableBtnPost), for: .editingChanged)
 
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        //it has to wait for the setupViewResizerOnKeyboardShown() to kick in before
+        //can becomeFirstResponder() otherwise textView will not show
+        //100 milliseconds 0.1 seconds can make a big deal
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+            // Your code with delay
+            self.textView.becomeFirstResponder()
+        }
+        
+    }
+    
+    //incase user types but does not post and returns to homeFeed
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
         
-        textField.text = ""
+        textView.text = ""
     }
     
     @objc func disableBtnPost(){
         
-        if (textField.text?.isEmpty)! {
-            postBtn.isEnabled = false
-        }else {
-            postBtn.isEnabled = true
-        }
+        
     }
     
     func setTitleInNavBar(){
@@ -80,6 +104,15 @@ class CommentsViewController: UIViewController, UITableViewDelegate, UITableView
         titleLabel.attributedText = titleText
         titleLabel.sizeToFit()
         navigationItem.titleView = titleLabel
+    }
+    
+    func textViewDidChange(_ textView: UITextView) {
+        
+        if (textView.text?.isEmpty)! {
+            postBtn.isEnabled = false
+        }else {
+            postBtn.isEnabled = true
+        }
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -110,7 +143,7 @@ class CommentsViewController: UIViewController, UITableViewDelegate, UITableView
             })
         }//if
         
-        comments.append(textField.text!)
+        comments.append(textView.text!)
         
         commentPost!.setObject(comments, forKey: "comments")
         commentPost!.saveInBackground(block: {(success: Bool, error: Error?) -> Void in
@@ -118,7 +151,8 @@ class CommentsViewController: UIViewController, UITableViewDelegate, UITableView
         })
         
         self.tableView.reloadData()
-        textField.text = ""
+        textView.text = ""
+        postBtn.isEnabled = false
     }
     
     func fetchData(){

@@ -127,16 +127,6 @@
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="7gs-ju-Qtf">
                                 <rect key="frame" x="0.0" y="812" width="414" height="50"/>
                                 <subviews>
-                                    <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="vNX-6D-eeg">
-                                        <rect key="frame" x="10" y="2" width="354" height="48"/>
-                                        <color key="backgroundColor" red="0.82745098039999998" green="0.87843137250000003" blue="0.89019607840000003" alpha="0.92000000000000004" colorSpace="custom" customColorSpace="displayP3"/>
-                                        <constraints>
-                                            <constraint firstAttribute="height" constant="48" id="h7M-p0-Xs5"/>
-                                        </constraints>
-                                        <nil key="textColor"/>
-                                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                        <textInputTraits key="textInputTraits"/>
-                                    </textField>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="p5c-Ik-Z8e">
                                         <rect key="frame" x="364" y="2" width="50" height="48"/>
                                         <color key="backgroundColor" red="0.82745098039999998" green="0.87843137250000003" blue="0.89019607840000003" alpha="0.92000000000000004" colorSpace="custom" customColorSpace="displayP3"/>
@@ -149,17 +139,30 @@
                                             <action selector="commentAction:" destination="3Wv-fN-b3C" eventType="touchUpInside" id="Jif-Hh-nEX"/>
                                         </connections>
                                     </button>
+                                    <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="Qsh-Vt-fiP" customClass="RSKPlaceholderTextView" customModule="RSKPlaceholderTextView">
+                                        <rect key="frame" x="10" y="2" width="354" height="48"/>
+                                        <color key="backgroundColor" red="0.82745098039999998" green="0.87843137250000003" blue="0.89019607840000003" alpha="0.92000000000000004" colorSpace="custom" customColorSpace="displayP3"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="354" id="0zE-ZU-gZr"/>
+                                            <constraint firstAttribute="height" constant="48" id="SIc-mA-T85"/>
+                                        </constraints>
+                                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                        <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="string" keyPath="placeholder" value="Add a comment..."/>
+                                        </userDefinedRuntimeAttributes>
+                                    </textView>
                                 </subviews>
                                 <color key="backgroundColor" red="0.82745098039999998" green="0.87843137250000003" blue="0.89019607840000003" alpha="0.92000000000000004" colorSpace="custom" customColorSpace="displayP3"/>
                                 <constraints>
-                                    <constraint firstItem="vNX-6D-eeg" firstAttribute="leading" secondItem="7gs-ju-Qtf" secondAttribute="leading" constant="10" id="6OI-1L-6hu"/>
-                                    <constraint firstAttribute="bottom" secondItem="vNX-6D-eeg" secondAttribute="bottom" id="7GV-v2-1VB"/>
+                                    <constraint firstItem="Qsh-Vt-fiP" firstAttribute="leading" secondItem="7gs-ju-Qtf" secondAttribute="leading" constant="10" id="2ur-Sw-ma1"/>
+                                    <constraint firstItem="p5c-Ik-Z8e" firstAttribute="leading" secondItem="Qsh-Vt-fiP" secondAttribute="trailing" id="Ky1-sU-aog"/>
+                                    <constraint firstAttribute="bottom" secondItem="Qsh-Vt-fiP" secondAttribute="bottom" id="LUf-FY-2Ph"/>
                                     <constraint firstItem="p5c-Ik-Z8e" firstAttribute="top" secondItem="7gs-ju-Qtf" secondAttribute="top" constant="2" id="MvV-sU-cDH"/>
                                     <constraint firstAttribute="height" constant="50" id="ZyP-eT-Mqk"/>
                                     <constraint firstAttribute="trailing" secondItem="p5c-Ik-Z8e" secondAttribute="trailing" id="a9U-F2-Rdg"/>
-                                    <constraint firstItem="p5c-Ik-Z8e" firstAttribute="leading" secondItem="vNX-6D-eeg" secondAttribute="trailing" id="kQh-Gx-jVM"/>
+                                    <constraint firstItem="Qsh-Vt-fiP" firstAttribute="top" secondItem="7gs-ju-Qtf" secondAttribute="top" constant="2" id="beR-yw-AbK"/>
                                     <constraint firstAttribute="bottom" secondItem="p5c-Ik-Z8e" secondAttribute="bottom" id="p5d-bC-r7E"/>
-                                    <constraint firstItem="vNX-6D-eeg" firstAttribute="top" secondItem="7gs-ju-Qtf" secondAttribute="top" constant="2" id="r1b-o5-teh"/>
                                 </constraints>
                             </view>
                         </subviews>
@@ -178,7 +181,7 @@
                     <connections>
                         <outlet property="postBtn" destination="p5c-Ik-Z8e" id="bKn-rW-7bI"/>
                         <outlet property="tableView" destination="286-cE-Fbb" id="x9r-bQ-GjY"/>
-                        <outlet property="textField" destination="vNX-6D-eeg" id="ctQ-vE-kta"/>
+                        <outlet property="textView" destination="Qsh-Vt-fiP" id="zwl-MI-012"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="tUe-sE-TV2" userLabel="First Responder" sceneMemberID="firstResponder"/>
