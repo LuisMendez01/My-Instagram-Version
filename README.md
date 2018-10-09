@@ -39,6 +39,9 @@ The following **additional** features are implemented:
 
 - [x] List anything else that you can get done to improve the app functionality!
 
+  1. I want to make likes persist like the real instagram app.
+  2. Allow users to follow and be followed. 
+
 Please list two areas of the assignment you'd like to **discuss further with your peers** during the next class (examples include better ways to implement something, how to extend your app in certain ways, etc):
 
 1. I want to know how to reload table without table shifiting offset by that much.
@@ -48,7 +51,7 @@ Please list two areas of the assignment you'd like to **discuss further with you
 
 Here's a walkthrough of implemented user stories:
 
-<img src='http://i.imgur.com/link/to/your/gif/file.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
+<img src='https://i.imgur.com/6dBzy9g.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
 
 GIF created with [LiceCap](http://www.cockos.com/licecap/).
 
@@ -64,6 +67,9 @@ List an 3rd party libraries, icons, graphics, or other assets you used in your a
 ## Notes
 
 Describe any challenges encountered while building the app.
+
+  1. Understanding the backend, I see json keys are different on dashboard from the keys we use in the code for some reason.
+  2. Camerag manager, even though I was able to use it, I can't find a way to make it flip to front camera and when picture is taken the image turns 90 degrees to the left. why? I want to know
 
 
 ## License
