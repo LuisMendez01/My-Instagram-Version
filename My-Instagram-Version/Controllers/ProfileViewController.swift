@@ -49,6 +49,15 @@ class ProfileViewController: UIViewController, UICollectionViewDataSource, UINav
         profileImage.addGestureRecognizer(imageTap)
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        /********* Fetch data from Parse-server ********/
+        fetchData()
+        print("Inside viewWillAppear")
+        
+    }
+    
     /*******************
      * @OBJC FUNCTIONS *
      *******************/
@@ -80,7 +89,7 @@ class ProfileViewController: UIViewController, UICollectionViewDataSource, UINav
     func fetchData(){
         
         let query = Post.query()
-        query?.cachePolicy = .cacheElseNetwork
+        query?.cachePolicy = .cacheThenNetwork//load what is cached and get new if there is from network
         query?.order(byDescending: "createdAt")
         query?.whereKey("author", equalTo: userPost)//["username"] as! String
         query?.limit = 15
@@ -137,13 +146,13 @@ class ProfileViewController: UIViewController, UICollectionViewDataSource, UINav
                     })
                 }
                 
-                //reload collection after all movies are input in movies array
+                //reload collection after all posts are input in array
                 self.collectionView.reloadData()
                         
                 } else {
                         print(error?.localizedDescription as Any)
                     }
-            })
+            })//findObjectsInBackground
     }
     
     private func resize(image: UIImage, newSize: CGSize) -> UIImage {
@@ -235,6 +244,7 @@ class ProfileViewController: UIViewController, UICollectionViewDataSource, UINav
      * CollectionView functions *
      ****************************/
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        print("Post count : \(posts.count)")
         return posts.count
     }
     

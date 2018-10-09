@@ -83,7 +83,7 @@ class HomeFeedViewController: UIViewController, UITableViewDelegate, UITableView
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        myTableView.reloadData()
+        myTableView.reloadData()//coming from commenting to refresh comments count
     }
     
     /************************

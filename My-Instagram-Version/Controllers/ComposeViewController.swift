@@ -24,16 +24,13 @@ class ComposeViewController: UIViewController, UINavigationControllerDelegate, U
         super.viewDidLoad()
         
         //if you don't want to save in the camera roll, do this
-            //cameraManager.writeFilesToPhoneLibrary = false
-        
-        //cameraManager.addPreviewLayerToView(self.cameraView)
-        
-        cameraManager.capturePictureWithCompletion({ (image, error) -> Void in
-            self.imageToPost.image = image
-        })
-        
-        //validVC.image = capturedImage
-        //let pictureImageData = UIImageJPEGRepresentation(capturedImage, 0.0)
+//        cameraManager.writeFilesToPhoneLibrary = true
+//
+//        cameraManager.addPreviewLayerToView(imageToPost)
+//
+//        cameraManager.capturePictureWithCompletion({ (image, error) -> Void in
+//            self.imageToPost.image = image
+//        })
         
         /********* Title In Nav Bar *******/
         setTitleInNavBar()
